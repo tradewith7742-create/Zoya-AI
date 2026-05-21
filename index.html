@@ -61,7 +61,7 @@
         .zoya-msg .msg-bubble p:last-child { margin-bottom: 0; }
         .zoya-msg .msg-bubble strong { color: #b388ff; font-weight: 600; }
         
-        /* 🔥 NEW CSS: ADVANCED CODE BLOCKS & BUTTONS 🔥 */
+        /* 🔥 CODE BLOCKS & BUTTONS 🔥 */
         .code-container { margin: 12px 0; border-radius: 8px; overflow: hidden; border: 1px solid #3c4043; box-shadow: 0 4px 6px rgba(0,0,0,0.3); background-color: #1e1f20; }
         .code-header { background-color: #282a2c; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; color: #9aa0a6; font-size: 12px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid #3c4043; }
         .code-container pre { background: transparent; padding: 12px; border: none; overflow-x: auto; margin: 0; font-family: monospace; font-size: 13px; }
@@ -76,7 +76,6 @@
         .glow-wave { width: 50px; height: 3px; background: #b388ff; box-shadow: 0 0 10px #b388ff; border-radius: 2px; animation: pulse 1s infinite; }
         @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.5; transform: scale(0.95); } }
         
-        /* 📱 BOTTOM PADDING FIX */
         .input-area { padding: 10px 20px calc(20px + env(safe-area-inset-bottom)) 20px; background-color: #131314; position: relative; z-index: 10; border: none; }
         .input-wrapper { background-color: #1e1f20; border-radius: 30px; display: flex; align-items: center; padding: 5px 8px; border: none; }
         .icon-btn { background: none; border: none; color: #b388ff; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; transition: background 0.2s; }
@@ -185,15 +184,15 @@
     </div>
 
     <script>
-        // 🚨 YAHAN APNI ASLI CHABI DALEIN (JO 'AIza...' SE SHURU HOTI HAI) 🚨
+        // 🚨 CONFIGURATION: YAHAN APNI ASLI 'AIza...' WALI KEY DAALEIN 🚨
         const API_KEY = "YAHAN_APNI_AIza_WALI_KEY_PASTE_KAREIN"; 
         
+        // 🔥 Engine changed back to 1.5 PRO exactly as requested 🔥
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
         
-        // --- TEXT TO SPEECH MEMORY ---
         const messageMemory = {}; 
         let currentSpeakingId = null;
         let zoyaBestVoice = null;
@@ -204,7 +203,6 @@
         }
         window.speechSynthesis.onvoiceschanged = loadBestVoice;
 
-        // --- MARKED.JS CUSTOM RENDERER FOR COPY BUTTON ---
         const renderer = new marked.Renderer();
         renderer.code = function(code, language) {
             const escapedCode = code.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
@@ -212,9 +210,7 @@
         };
         marked.setOptions({ renderer: renderer, breaks: true, gfm: true });
 
-        // --- EVENT DELEGATION (COPY & SPEAKER BUTTONS) ---
         document.getElementById('chatScreen').addEventListener('click', async (e) => {
-            // Copy Button Logic
             const copyBtn = e.target.closest('.copy-btn');
             if (copyBtn) {
                 const codeElement = copyBtn.parentElement.nextElementSibling.querySelector('code');
@@ -233,13 +229,11 @@
                 return;
             }
 
-            // Speaker Button Logic
             const ttsBtn = e.target.closest('.tts-btn');
             if (ttsBtn) {
                 const id = ttsBtn.getAttribute('data-id');
                 const icon = ttsBtn.querySelector('i');
 
-                // Stop if already speaking this message
                 if (window.speechSynthesis.speaking && currentSpeakingId === id) {
                     window.speechSynthesis.cancel();
                     icon.className = 'fa-solid fa-volume-high';
@@ -247,13 +241,12 @@
                     return;
                 }
                 
-                window.speechSynthesis.cancel(); // Stop any current speech
+                window.speechSynthesis.cancel(); 
 
                 let textToSpeak = messageMemory[id] || "";
                 if(!textToSpeak) return;
 
-                // Make code blocks sound natural
-                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap screen par dekh sakte hain. ');
+                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap box me dekh sakte hain. ');
                 textToSpeak = textToSpeak.replace(/[*#_]/g, '');
 
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -297,7 +290,7 @@
                     }
                 });
             } else {
-                appendZoyaMessage("Hello Boss! Main Zoya hoon. Ab mere andar **Copy Button** aur **Aawaz (Speaker)** dono naye features aa gaye hain! Boliye kya hukum hai?", true);
+                appendZoyaMessage("Hello Boss! Main Zoya hoon. Mera advanced **Gemini 1.5 Pro** engine active ho chuka hai! Boliye kya coding hukum hai?", true);
             }
         };
 
@@ -469,8 +462,7 @@
 
             const requestPayload = { 
                 systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks. You have access to Google Search." }] },
-                contents: extendedMemory,
-                tools: [{ googleSearch: {} }]
+                contents: extendedMemory
             };
 
             try {
@@ -483,7 +475,7 @@
                 const resData = await response.json();
                 
                 if (resData.error) {
-                    let errMsg = "Boss, lagta hai API limit full ho gaya hai ya connection issue hai. Pls check kijiye.";
+                    let errMsg = "Boss, lagta hai API limit full ho gaya hai ya connection issue hai. Pls thodi der wait karke wapas try kijiye.";
                     appendZoyaMessage(errMsg, true);
                     waveContainer.style.display = 'none';
                     document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";

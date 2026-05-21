@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ZOYA AI - Classic Sparkle Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
@@ -380,4 +380,144 @@
             if(SpeechRecognition) {
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'hi-IN'; 
-                recognition
+                recognition.continuous = false;
+
+                micBtn.addEventListener('click', () => {
+                    micBtn.classList.add('recording');
+                    userInput.placeholder = "Boliye Boss, Zoya sun rahi hai...";
+                    recognition.start();
+                });
+
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    userInput.value = transcript;
+                    micBtn.classList.remove('recording');
+                    userInput.placeholder = "यहाँ मैसेज डालें...";
+                    sendBtn.click(); 
+                };
+
+                recognition.onerror = (e) => {
+                    micBtn.classList.remove('recording');
+                    userInput.placeholder = "यहाँ मैसेज डालें...";
+                };
+                
+                recognition.onend = () => {
+                    micBtn.classList.remove('recording');
+                    userInput.placeholder = "यहाँ मैसेज डालें...";
+                };
+            } else {
+                micBtn.addEventListener('click', () => alert("Aapka browser Mic support nahi karta Boss!"));
+            }
+        }
+
+        function appendUserMessage(htmlContent) {
+            const d = document.createElement('div'); d.classList.add('message', 'user-msg');
+            d.innerHTML = `<div class="msg-bubble">${htmlContent}</div>`;
+            chatScreen.appendChild(d); chatScreen.scrollTop = chatScreen.scrollHeight;
+        }
+
+        function appendZoyaMessage(rawText, isTyping = false) {
+            const id = 'msg-' + Date.now() + Math.floor(Math.random() * 1000);
+            messageMemory[id] = rawText; 
+
+            const d = document.createElement('div'); 
+            d.classList.add('message', 'zoya-msg');
+            
+            d.innerHTML = `
+                <div class="zoya-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="msg-bubble" style="width: 100%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                        <span style="color: #c58af9; font-weight: bold; font-size: 13px;">Zoya</span>
+                        <button class="tts-btn" data-id="${id}" title="Padhkar sunao"><i class="fa-solid fa-volume-high"></i></button>
+                    </div>
+                    <div class="content-body" id="${id}"></div>
+                </div>
+            `;
+            chatScreen.appendChild(d);
+            const bodyDiv = d.querySelector('.content-body');
+            const parsedHTML = marked.parse(rawText);
+
+            if (isTyping) {
+                let i = 0; let isTag = false; let text = "";
+                function type() {
+                    if (i < parsedHTML.length) {
+                        text += parsedHTML.charAt(i);
+                        if (parsedHTML.charAt(i) === '<') isTag = true;
+                        if (parsedHTML.charAt(i) === '>') isTag = false;
+                        bodyDiv.innerHTML = text;
+                        i++;
+                        if (isTag) { type(); } else { setTimeout(type, 10); } 
+                        chatScreen.scrollTop = chatScreen.scrollHeight;
+                    }
+                }
+                type();
+            } else {
+                bodyDiv.innerHTML = parsedHTML;
+                chatScreen.scrollTop = chatScreen.scrollHeight;
+            }
+        }
+
+        async function askZoya(t) {
+            appendUserMessage(t);
+            extendedMemory.push({ role: "user", parts: [{ text: t }] });
+            saveMemory(); await askZoyaRaw();
+        }
+
+        async function askZoyaRaw() {
+            waveContainer.style.display = 'flex';
+            document.getElementById('coreStatus').innerText = "Typing...";
+
+            const requestPayload = { 
+                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks. You have access to Google Search." }] },
+                contents: extendedMemory,
+                tools: [{ googleSearch: {} }]
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestPayload)
+                });
+                
+                const resData = await response.json();
+                
+                if (resData.error) {
+                    let errMsg = "Boss, lagta hai API limit full ho gaya hai ya connection issue hai. Pls check kijiye.";
+                    appendZoyaMessage(errMsg, true);
+                    waveContainer.style.display = 'none';
+                    document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
+                    return;
+                }
+
+                let textReply = "";
+                if (resData && resData.candidates && resData.candidates[0]) {
+                    const cand = resData.candidates[0];
+                    if (cand.content && cand.content.parts) {
+                        cand.content.parts.forEach(part => { if (part.text) { textReply += part.text; } });
+                    }
+                }
+
+                if(textReply && textReply.trim() !== "") {
+                    extendedMemory.push({ role: "model", parts: [{ text: textReply }] });
+                    saveMemory(); 
+                    appendZoyaMessage(textReply, true); 
+                }
+            } catch(e) {
+                extendedMemory.pop(); saveMemory();
+                appendZoyaMessage("Boss, thoda network issue aa raha hai. Ek baar fir se try kijiye!", true); 
+            }
+            waveContainer.style.display = 'none';
+            document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
+        }
+
+        if(sendBtn) {
+            sendBtn.addEventListener('click', () => { 
+                const t = userInput.value.trim(); if(!t) return; 
+                userInput.value = ""; askZoya(t); 
+            });
+            userInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendBtn.click(); });
+        }
+    </script>
+</body>
+</html>

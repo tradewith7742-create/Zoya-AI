@@ -208,8 +208,8 @@
 
     <script>
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        // 👇 BOSS MAINE YAHAN MODEL NAME CHANGE KAR DIYA HAI 👇
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
+        // 👇 UPGRADE 1: SUPER FAST FLASH ENGINE INTEGRATED 👇
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
@@ -323,7 +323,7 @@
             } 
             
             if (!hasMemoryLoaded) {
-                appendZoyaMessage("Hello Boss! Main ekdum stable aur free **Gemini 1.5 Pro** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
+                appendZoyaMessage("Hello Boss! Main ekdum stable aur super-fast **Gemini 1.5 Flash (Python Expert)** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
             }
         };
 
@@ -546,10 +546,13 @@
         async function askZoyaRaw() {
             waveContainer.style.display = 'flex';
             document.getElementById('coreStatus').innerText = "Typing...";
+            
+            // 👇 UPGRADE 2: NEW ADVANCED SYSTEM PROMPT FOR EXPERT PYTHON CODE 👇
             const requestPayload = { 
-                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks." }] },
+                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep conversation crisp and in Hinglish. You are an Elite Senior Python Developer and Algo Expert. Your primary job is to write highly optimized, bug-free, and professional Python scripts super fast. Avoid long explanations. Focus directly on providing the exact, working code block using standard libraries." }] },
                 contents: extendedMemory
             };
+            
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST', 

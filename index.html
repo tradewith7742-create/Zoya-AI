@@ -208,7 +208,8 @@
 
     <script>
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
+        // 👇 BOSS MAINE YAHAN MODEL NAME CHANGE KAR DIYA HAI 👇
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
@@ -322,7 +323,7 @@
             } 
             
             if (!hasMemoryLoaded) {
-                appendZoyaMessage("Hello Boss! Main ekdum stable aur free **Gemini 1.5 Pro Latest** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
+                appendZoyaMessage("Hello Boss! Main ekdum stable aur free **Gemini 1.5 Pro** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
             }
         };
 

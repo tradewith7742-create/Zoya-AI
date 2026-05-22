@@ -135,7 +135,7 @@
 
             <div class="chat-section-title">चैट हिस्ट्री</div>
             <div class="history-item active" id="mainHistoryCard">
-                <span class="chat-title">Zoya 1.5 Pro...</span>
+                <span class="chat-title">Zoya 1.5 Flash...</span>
                 <i class="fa-solid fa-thumbtack text-gray-600" id="historyPinIcon"></i>
             </div>
         </div>
@@ -184,7 +184,7 @@
                 <i class="fa-solid fa-bars menu-bars" onclick="toggleSidebar()"></i>
                 <div class="title-container">
                     <h1>ZOYA AI <i class="fa-solid fa-caret-down" style="font-size: 12px; color: #666; margin-left: 5px;"></i></h1>
-                    <p class="subtitle" id="coreStatus">1.5 Pro Active ✨</p>
+                    <p class="subtitle" id="coreStatus">1.5 Flash Active ✨</p>
                 </div>
             </div>
             <div class="header-right">
@@ -208,8 +208,9 @@
 
     <script>
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        // 👇 UPGRADE 1: SUPER FAST FLASH ENGINE INTEGRATED 👇
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
+        
+        // 👇 FINAL UPGRADE: CHANGED TO 'V1' PRODUCTION API TO BYPASS BETA RESTRICTIONS 👇
+        const API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
@@ -323,7 +324,7 @@
             } 
             
             if (!hasMemoryLoaded) {
-                appendZoyaMessage("Hello Boss! Main ekdum stable aur super-fast **Gemini 1.5 Flash (Python Expert)** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
+                appendZoyaMessage("Hello Boss! Main ekdum stable aur super-fast **Gemini 1.5 Flash (v1 Version)** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
             }
         };
 
@@ -547,7 +548,6 @@
             waveContainer.style.display = 'flex';
             document.getElementById('coreStatus').innerText = "Typing...";
             
-            // 👇 UPGRADE 2: NEW ADVANCED SYSTEM PROMPT FOR EXPERT PYTHON CODE 👇
             const requestPayload = { 
                 systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep conversation crisp and in Hinglish. You are an Elite Senior Python Developer and Algo Expert. Your primary job is to write highly optimized, bug-free, and professional Python scripts super fast. Avoid long explanations. Focus directly on providing the exact, working code block using standard libraries." }] },
                 contents: extendedMemory
@@ -586,7 +586,7 @@
                 appendZoyaMessage(`Boss, connection fail ho gaya. Error detail: **${e.message}**`, true); 
             }
             waveContainer.style.display = 'none';
-            document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
+            document.getElementById('coreStatus').innerText = "1.5 Flash Active ✨";
         }
 
         function escapeHTML(str) {

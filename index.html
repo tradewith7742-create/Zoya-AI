@@ -11,6 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
+        /* 📱 MOBILE SCREEN FIXES */
         body { background-color: #000000; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100dvh; overflow: hidden; }
         .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #131314; display: flex; flex-direction: column; position: relative; border: none; overflow: hidden; }
         
@@ -19,12 +20,12 @@
         .sidebar-search { margin: 20px 15px 15px 15px; background: #282a2c; border-radius: 25px; display: flex; align-items: center; padding: 10px 15px; }
         .sidebar-search i { color: #b388ff; font-size: 16px; margin-right: 12px; }
         .sidebar-search input { background: none; border: none; color: #e3e3e3; font-size: 15px; outline: none; width: 100%; }
-        .sidebar-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #e3e3e3; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+        .sidebar-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #e3e3e3; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; border-radius: 10px; margin: 0 10px; }
         .sidebar-item:hover { background: #282a2c; }
         .sidebar-item-left { display: flex; align-items: center; }
         .sidebar-item i.icon { margin-right: 15px; font-size: 16px; width: 20px; text-align: center; color: #b388ff; }
         .chat-section-title { font-size: 13px; color: #b388ff; padding: 20px 20px 10px 20px; font-weight: 600; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #c4c7c5; font-size: 14px; cursor: pointer; border-radius: 25px; margin: 0 10px 5px 10px; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #c4c7c5; font-size: 14px; cursor: pointer; border-radius: 25px; margin: 0 10px 5px 10px; transition: all 0.2s; }
         .history-item:hover { background: #282a2c; }
         .history-item.active { background: rgba(179, 136, 255, 0.1); color: #b388ff; }
         .sidebar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
@@ -60,6 +61,7 @@
         .zoya-msg .msg-bubble p:last-child { margin-bottom: 0; }
         .zoya-msg .msg-bubble strong { color: #b388ff; font-weight: 600; }
         
+        /* 🔥 CODE BLOCKS & BUTTONS 🔥 */
         .code-container { margin: 12px 0; border-radius: 8px; overflow: hidden; border: 1px solid #3c4043; box-shadow: 0 4px 6px rgba(0,0,0,0.3); background-color: #1e1f20; }
         .code-header { background-color: #282a2c; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; color: #9aa0a6; font-size: 12px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid #3c4043; }
         .code-container pre { background: transparent; padding: 12px; border: none; overflow-x: auto; margin: 0; font-family: monospace; font-size: 13px; }
@@ -80,6 +82,20 @@
         .icon-btn.recording { color: #ff1744; animation: pulse 1s infinite; }
         .icon-btn:hover { background-color: #333538; }
         #userInput { flex: 1; background: none; border: none; color: #e3e3e3; font-size: 15px; padding: 12px 10px; outline: none; }
+        
+        /* Feedback & Notebook Modal Layouts */
+        .feedback-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #1e1f22; width: 85%; border-radius: 15px; padding: 20px; z-index: 1005; display: none; flex-direction: column; opacity: 0; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid #333; }
+        .feedback-modal.active { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .feedback-modal h3 { color: #b388ff; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .feedback-modal p { color: #c4c7c5; font-size: 12px; margin-bottom: 15px; }
+        .feedback-modal textarea { width: 100%; height: 90px; background: #131314; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #e3e3e3; font-size: 14px; outline: none; resize: none; margin-bottom: 15px; }
+        .feedback-modal textarea:focus { border-color: #b388ff; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-btns button { padding: 8px 15px; border-radius: 6px; border: none; font-size: 13px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .cancel-btn { background: transparent; color: #c4c7c5; }
+        .cancel-btn:hover { background: #282a2c; }
+        .submit-btn { background: #b388ff; color: #131314; }
+        .submit-btn:hover { background: #9e6bff; }
     </style>
 </head>
 <body>
@@ -112,17 +128,58 @@
                 <div class="sidebar-item-left"><i class="fa-regular fa-pen-to-square icon"></i> नई चैट</div>
             </div>
             
+            <div class="sidebar-item" onclick="openNotebook()">
+                <div class="sidebar-item-left"><i class="fa-solid fa-book icon"></i> नोटबुक</div>
+            </div>
+
+            <div class="sidebar-item" onclick="openFeedback()">
+                <div class="sidebar-item-left"><i class="fa-solid fa-circle-question icon"></i> सहायता / सुझाव दें</div>
+            </div>
+
             <div class="chat-section-title">चैट हिस्ट्री</div>
-            <div class="history-item active">
-                <span class="chat-title">Zoya 1.5 Pro...</span>
-                <i class="fa-solid fa-thumbtack"></i>
+            <div class="history-item active" id="mainHistoryCard">
+                <span class="chat-title">Zoya 2.5 Pro...</span>
+                <i class="fa-solid fa-thumbtack text-gray-600" id="historyPinIcon"></i>
             </div>
         </div>
 
         <div class="sheet-overlay" id="sheetOverlay" onclick="toggleBottomSheet()"></div>
         <div class="bottom-sheet" id="bottomSheet">
             <div class="sheet-drag-handle"></div>
-            <div class="sheet-item" onclick="deleteChat()" style="color: #ff1744;"><i class="fa-solid fa-trash" style="color: #ff1744;"></i><span>Chat Delete Karein</span></div>
+            
+            <div class="sheet-item" onclick="togglePin()">
+                <i class="fa-solid fa-thumbtack" id="pinIcon"></i><span id="pinText">पिन करें</span>
+            </div>
+
+            <div class="sheet-item" onclick="deleteChat()" style="color: #ff1744;">
+                <i class="fa-solid fa-trash" style="color: #ff1744;"></i><span>मिटाएँ</span>
+            </div>
+        </div>
+
+        <div class="sheet-overlay" id="feedbackOverlay" onclick="closeFeedback()" style="z-index: 1004;"></div>
+        <div class="feedback-modal" id="feedbackModal">
+            <h3><i class="fa-solid fa-comment-dots"></i> सुझाव या शिकायत</h3>
+            <p>Zoya AI ko aur behtar banane ke liye apna feedback yahan likhein:</p>
+            <textarea id="feedbackText" placeholder="Boss, apni baat yahan likhiye..."></textarea>
+            <div class="modal-btns">
+                <button class="cancel-btn" onclick="closeFeedback()">रद्द करें</button>
+                <button class="submit-btn" onclick="submitFeedback()">सबमिट करें</button>
+            </div>
+        </div>
+
+        <div class="sheet-overlay" id="notebookOverlay" onclick="closeNotebook()" style="z-index: 1008;"></div>
+        <div class="feedback-modal" id="notebookModal" style="z-index: 1009; max-height: 80vh; overflow-y: auto;">
+            <h3><i class="fa-solid fa-book text-[#b388ff]"></i> मेरी पर्सनल नोटबुक</h3>
+            <p>Boss, yahan trading strategies ya important text save kijiye:</p>
+            <textarea id="noteInput" placeholder="Yahan apna note type karein..."></textarea>
+            <button onclick="saveNote()" class="submit-btn w-full py-2 bg-[#b388ff] text-black font-bold rounded-lg mb-4 hover:bg-[#9e6bff] transition">Note Save Karein</button>
+            
+            <div class="text-xs font-bold text-[#b388ff] mb-2 uppercase tracking-wider">Saved Notes:</div>
+            <div id="notesList" class="space-y-2 max-h-44 overflow-y-auto pr-1"></div>
+            
+            <div class="modal-btns mt-4">
+                <button class="cancel-btn" onclick="closeNotebook()">बंद करें</button>
+            </div>
         </div>
 
         <header class="chat-header">
@@ -130,7 +187,7 @@
                 <i class="fa-solid fa-bars menu-bars" onclick="toggleSidebar()"></i>
                 <div class="title-container">
                     <h1>ZOYA AI <i class="fa-solid fa-caret-down" style="font-size: 12px; color: #666; margin-left: 5px;"></i></h1>
-                    <p class="subtitle" id="coreStatus">1.5 Pro Active ✨</p>
+                    <p class="subtitle" id="coreStatus">2.5 Pro Active ✨</p>
                 </div>
             </div>
             <div class="header-right">
@@ -144,7 +201,7 @@
 
         <footer class="input-area">
             <div class="input-wrapper">
-                <button class="icon-btn" onclick="document.getElementById('imageUpload').click()"><i class="fa-solid fa-image"></i></button>
+                <button class="icon-btn" onclick="document.getElementById('imageUpload').click()"><i class="fa-solid fa-plus"></i></button>
                 <input type="text" id="userInput" placeholder="यहाँ मैसेज डालें..." autocomplete="off">
                 <button class="icon-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
                 <button class="icon-btn" id="sendBtn" style="color: #b388ff;"><i class="fa-solid fa-paper-plane"></i></button>
@@ -153,12 +210,11 @@
     </div>
 
     <script>
-        // AAPKI AI STUDIO WALI CHABI YAHAN PEHLE SE LAGI HUI HAI 👇
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=" + API_KEY;
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
+        let isPinned = false;
         
         const messageMemory = {}; 
         let currentSpeakingId = null;
@@ -188,10 +244,7 @@
                     const originalText = copyBtn.innerHTML;
                     copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
                     copyBtn.style.color = '#81c995';
-                    setTimeout(() => { 
-                        copyBtn.innerHTML = originalText; 
-                        copyBtn.style.color = '#a8c7fa';
-                    }, 2000);
+                    setTimeout(() => { copyBtn.innerHTML = originalText; copyBtn.style.color = '#a8c7fa'; }, 2000);
                 }
                 return;
             }
@@ -207,13 +260,12 @@
                     currentSpeakingId = null;
                     return;
                 }
-                
                 window.speechSynthesis.cancel(); 
 
                 let textToSpeak = messageMemory[id] || "";
                 if(!textToSpeak) return;
 
-                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap screen par dekh sakte hain. ');
+                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap box me dekh sakte hain. ');
                 textToSpeak = textToSpeak.replace(/[*#_]/g, '');
 
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -226,22 +278,19 @@
                     icon.className = 'fa-solid fa-stop glowing-mic';
                     currentSpeakingId = id;
                 };
-                utterance.onend = () => {
-                    icon.className = 'fa-solid fa-volume-high';
-                    icon.classList.remove('glowing-mic');
-                    currentSpeakingId = null;
-                };
-                utterance.onerror = () => {
-                    icon.className = 'fa-solid fa-volume-high';
-                    currentSpeakingId = null;
-                };
-
+                utterance.onend = () => { icon.className = 'fa-solid fa-volume-high'; icon.classList.remove('glowing-mic'); currentSpeakingId = null; };
+                utterance.onerror = () => { icon.className = 'fa-solid fa-volume-high'; currentSpeakingId = null; };
                 window.speechSynthesis.speak(utterance);
             }
         });
 
         window.onload = () => {
             loadBestVoice();
+            
+            // 🔥 LOAD PIN STATUS FROM DATABASE 🔥
+            isPinned = localStorage.getItem('zoya_is_pinned') === 'true';
+            updatePinUI();
+
             const savedMemory = localStorage.getItem('zoya_memory');
             if (savedMemory) {
                 extendedMemory = JSON.parse(savedMemory);
@@ -252,18 +301,97 @@
                             const imgUrl = `data:${msg.parts[0].inlineData.mimeType};base64,${msg.parts[0].inlineData.data}`;
                             appendUserMessage(`<img src="${imgUrl}">`);
                         }
-                    } else { 
-                        appendZoyaMessage(msg.parts[0].text, false); 
-                    }
+                    } else { appendZoyaMessage(msg.parts[0].text, false); }
                 });
             } else {
-                appendZoyaMessage("Hello Boss! Main tayyar hoon. Boliye aaj kaun sa code likhna hai?", true);
+                appendZoyaMessage("Hello Boss! Main Zoya hoon. Mera naya advanced **Gemini 2.5 Pro** engine active ho chuka hai! Boliye kya hukum hai?", true);
             }
         };
 
         function saveMemory() { localStorage.setItem('zoya_memory', JSON.stringify(extendedMemory)); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleBottomSheet() { document.getElementById('bottomSheet').classList.toggle('active'); document.getElementById('sheetOverlay').classList.toggle('active'); }
+        
+        // 🔥 ACTIVE PIN FUNCTION 🔥
+        function togglePin() {
+            isPinned = !isPinned;
+            localStorage.setItem('zoya_is_pinned', isPinned);
+            updatePinUI();
+            toggleBottomSheet();
+        }
+
+        function updatePinUI() {
+            const pinText = document.getElementById('pinText');
+            const pinIcon = document.getElementById('pinIcon');
+            const historyCard = document.getElementById('mainHistoryCard');
+            const historyPinIcon = document.getElementById('historyPinIcon');
+
+            if(isPinned) {
+                if(pinText) pinText.innerText = "अनपिन करें";
+                if(pinIcon) pinIcon.className = "fa-solid fa-thumbtack-slash";
+                if(historyCard) historyCard.style.border = "1px solid #b388ff";
+                if(historyPinIcon) { historyPinIcon.className = "fa-solid fa-thumbtack text-[#b388ff]"; }
+            } else {
+                if(pinText) pinText.innerText = "पिन करें";
+                if(pinIcon) pinIcon.className = "fa-solid fa-thumbtack";
+                if(historyCard) historyCard.style.border = "none";
+                if(historyPinIcon) { historyPinIcon.className = "fa-solid fa-thumbtack text-gray-600"; }
+            }
+        }
+
+        // 🔥 ACTIVE NOTEBOOK FUNCTIONS 🔥
+        function openNotebook() {
+            document.getElementById('notebookModal').classList.add('active');
+            document.getElementById('notebookOverlay').style.display = 'block';
+            loadNotes();
+            if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
+        }
+
+        function closeNotebook() {
+            document.getElementById('notebookModal').classList.remove('active');
+            document.getElementById('notebookOverlay').style.display = 'none';
+        }
+
+        function saveNote() {
+            const noteInput = document.getElementById('noteInput');
+            const text = noteInput.value.trim();
+            if(!text) return;
+
+            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
+            notes.push({ id: Date.now(), content: text });
+            localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes));
+            
+            noteInput.value = "";
+            loadNotes();
+        }
+
+        function loadNotes() {
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = "";
+            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
+
+            if(notes.length === 0) {
+                notesList.innerHTML = `<p class="text-gray-500 text-xs text-center py-4">Koi note save nahi hai Boss!</p>`;
+                return;
+            }
+
+            notes.forEach(note => {
+                const item = document.createElement('div');
+                item.className = "bg-[#1d1e20] p-2.5 rounded-lg border border-gray-800 flex justify-between items-start gap-2";
+                item.innerHTML = `
+                    <p class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1">${escapeHTML(note.content)}</p>
+                    <button onclick="deleteNote(${note.id})" class="text-red-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
+                `;
+                notesList.appendChild(item);
+            });
+        }
+
+        function deleteNote(id) {
+            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
+            notes = notes.filter(n => n.id !== id);
+            localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes));
+            loadNotes();
+        }
 
         function deleteChat() {
             extendedMemory = []; localStorage.removeItem('zoya_memory');
@@ -277,6 +405,20 @@
             document.getElementById('chatScreen').innerHTML = '';
             appendZoyaMessage("Nayi chat shuru ho gayi hai Boss! Boliye kya hukum hai?", true);
             toggleSidebar();
+        }
+
+        function openFeedback() { document.getElementById('feedbackModal').classList.add('active'); document.getElementById('feedbackOverlay').style.display = 'block'; if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); }
+        function closeFeedback() { document.getElementById('feedbackModal').classList.remove('active'); document.getElementById('feedbackOverlay').style.display = 'none'; }
+        
+        async function submitFeedback() {
+            let text = document.getElementById('feedbackText').value;
+            if(text.trim() === "") return;
+            document.getElementById('coreStatus').innerText = "Email bhej raha hoon...";
+            try {
+                await fetch("https://formspree.io/f/xwvzloyq", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Feedback: text, Sent_By: "Zoya App User" }) });
+                appendZoyaMessage("Boss, aapka feedback seedha meri email par bhej diya gaya hai! Main jald hi ispar action lungi. ✨", true);
+            } catch(e) { appendZoyaMessage("Boss, network ki wajah se feedback send nahi hua.", true); }
+            document.getElementById('feedbackText').value = ""; document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨"; closeFeedback();
         }
 
         function decodeJwtResponse(token) {
@@ -294,7 +436,7 @@
             document.getElementById('userName').innerText = userData.name;
             document.getElementById('userEmail').innerText = userData.email;
             document.getElementById('userInfo').style.display = 'flex';
-            appendZoyaMessage(`Swagat hai **${userData.name}**! Aap successfully login ho chuke hain. ✨`, true);
+            appendZoyaMessage(`Swagat hai **${userData.name}**! Aap successfully login ho chuke hain. Kahiye kya madad karoon? ✨`, true);
         }
 
         document.getElementById('imageUpload').addEventListener('change', function(e) {
@@ -302,7 +444,7 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 const base64String = event.target.result.split(',')[1];
-                appendUserMessage(`<img src="${event.target.result}" style="max-width: 100%; border-radius: 8px;">`);
+                appendUserMessage(`<img src="${event.target.result}">`);
                 const payload = [ { inlineData: { data: base64String, mimeType: file.type } }, { text: "Is photo ko dhyan se dekho aur batao isme kya hai." } ];
                 extendedMemory.push({ role: "user", parts: payload });
                 saveMemory(); askZoyaRaw();
@@ -310,10 +452,8 @@
             reader.readAsDataURL(file); e.target.value = "";
         });
 
-        const chatScreen = document.getElementById('chatScreen'); 
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn'); 
-        const micBtn = document.getElementById('micBtn');
+        const chatScreen = document.getElementById('chatScreen'); const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn'); const micBtn = document.getElementById('micBtn');
         const waveContainer = document.getElementById('waveContainer');
 
         if(micBtn) {
@@ -325,7 +465,7 @@
 
                 micBtn.addEventListener('click', () => {
                     micBtn.classList.add('recording');
-                    userInput.placeholder = "Boliye Boss...";
+                    userInput.placeholder = "Boliye Boss, Zoya sun rahi hai...";
                     recognition.start();
                 });
 
@@ -399,7 +539,7 @@
             document.getElementById('coreStatus').innerText = "Typing...";
 
             const requestPayload = { 
-                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks." }] },
+                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks. You have access to Google Search." }] },
                 contents: extendedMemory
             };
 
@@ -412,17 +552,13 @@
                 
                 const resData = await response.json();
                 
-                // 🔥 THE NEW X-RAY ERROR CHECKER 🔥
                 if (resData.error) {
                     let exactError = resData.error.message || "Unknown error";
-                    let errMsg = `Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit (50 messages) khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.`;
-                    
-                    // Galti agar memory corrupt hone se hai, to ek kadam peeche lo
+                    let errMsg = `Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.`;
                     extendedMemory.pop(); saveMemory();
-                    
                     appendZoyaMessage(errMsg, true);
                     waveContainer.style.display = 'none';
-                    document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
+                    document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨";
                     return;
                 }
 
@@ -444,7 +580,11 @@
                 appendZoyaMessage(`Boss, connection fail ho gaya. Error detail: **${e.message}**`, true); 
             }
             waveContainer.style.display = 'none';
-            document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
+            document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨";
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
         }
 
         if(sendBtn) {

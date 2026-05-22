@@ -209,15 +209,11 @@
     </div>
 
     <script>
-        // AAPKI CHABI
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        
-        // 🔥 LATEST STABLE PRO ENGINE (100% FREE & FAST) 🔥
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
-        
         const messageMemory = {}; 
         let currentSpeakingId = null;
         let zoyaBestVoice = null;
@@ -250,12 +246,10 @@
                 }
                 return;
             }
-
             const ttsBtn = e.target.closest('.tts-btn');
             if (ttsBtn) {
                 const id = ttsBtn.getAttribute('data-id');
                 const icon = ttsBtn.querySelector('i');
-
                 if (window.speechSynthesis.speaking && currentSpeakingId === id) {
                     window.speechSynthesis.cancel();
                     icon.className = 'fa-solid fa-volume-high';
@@ -263,18 +257,15 @@
                     return;
                 }
                 window.speechSynthesis.cancel(); 
-
                 let textToSpeak = messageMemory[id] || "";
                 if(!textToSpeak) return;
-
-                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap box me dekh sakte hain. ');
+                textToSpeak = textToSpeak.replace(/```[\s\S]*?
+```/g, ' Yahan maine code diya hai, jise aap box me dekh sakte hain. ');
                 textToSpeak = textToSpeak.replace(/[*#_]/g, '');
-
                 const utterance = new SpeechSynthesisUtterance(textToSpeak);
                 utterance.lang = 'hi-IN';
                 utterance.rate = 1.0;
                 if(zoyaBestVoice) utterance.voice = zoyaBestVoice;
-
                 utterance.onstart = () => {
                     document.querySelectorAll('.tts-btn i').forEach(i => i.className = 'fa-solid fa-volume-high');
                     icon.className = 'fa-solid fa-stop glowing-mic';
@@ -288,10 +279,8 @@
 
         window.onload = () => {
             loadBestVoice();
-            
             isPinned = localStorage.getItem('zoya_is_pinned') === 'true';
             updatePinUI();
-
             const savedMemory = localStorage.getItem('zoya_memory');
             if (savedMemory) {
                 extendedMemory = JSON.parse(savedMemory);
@@ -299,8 +288,8 @@
                     if(msg.role === "user") {
                         if(msg.parts[0].text) appendUserMessage(msg.parts[0].text);
                         else if(msg.parts[0].inlineData) {
-                            const imgUrl = `data:${msg.parts[0].inlineData.mimeType};base64,${msg.parts[0].inlineData.data}`;
-                            appendUserMessage(`<img src="${imgUrl}">`);
+                            const imgUrl = data:${msg.parts[0].inlineData.mimeType};base64,${msg.parts[0].inlineData.data};
+                            appendUserMessage(<img src="${imgUrl}">);
                         }
                     } else { appendZoyaMessage(msg.parts[0].text, false); }
                 });
@@ -312,20 +301,13 @@
         function saveMemory() { localStorage.setItem('zoya_memory', JSON.stringify(extendedMemory)); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleBottomSheet() { document.getElementById('bottomSheet').classList.toggle('active'); document.getElementById('sheetOverlay').classList.toggle('active'); }
-        
-        function togglePin() {
-            isPinned = !isPinned;
-            localStorage.setItem('zoya_is_pinned', isPinned);
-            updatePinUI();
-            toggleBottomSheet();
-        }
+        function togglePin() { isPinned = !isPinned; localStorage.setItem('zoya_is_pinned', isPinned); updatePinUI(); toggleBottomSheet(); }
 
         function updatePinUI() {
             const pinText = document.getElementById('pinText');
             const pinIcon = document.getElementById('pinIcon');
             const historyCard = document.getElementById('mainHistoryCard');
             const historyPinIcon = document.getElementById('historyPinIcon');
-
             if(isPinned) {
                 if(pinText) pinText.innerText = "अनपिन करें";
                 if(pinIcon) pinIcon.className = "fa-solid fa-thumbtack-slash";
@@ -339,73 +321,13 @@
             }
         }
 
-        function openNotebook() {
-            document.getElementById('notebookModal').classList.add('active');
-            document.getElementById('notebookOverlay').style.display = 'block';
-            loadNotes();
-            if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar();
-        }
-
-        function closeNotebook() {
-            document.getElementById('notebookModal').classList.remove('active');
-            document.getElementById('notebookOverlay').style.display = 'none';
-        }
-
-        function saveNote() {
-            const noteInput = document.getElementById('noteInput');
-            const text = noteInput.value.trim();
-            if(!text) return;
-
-            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
-            notes.push({ id: Date.now(), content: text });
-            localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes));
-            
-            noteInput.value = "";
-            loadNotes();
-        }
-
-        function loadNotes() {
-            const notesList = document.getElementById('notesList');
-            notesList.innerHTML = "";
-            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
-
-            if(notes.length === 0) {
-                notesList.innerHTML = `<p class="text-gray-500 text-xs text-center py-4">Koi note save nahi hai Boss!</p>`;
-                return;
-            }
-
-            notes.forEach(note => {
-                const item = document.createElement('div');
-                item.className = "bg-[#1d1e20] p-2.5 rounded-lg border border-gray-800 flex justify-between items-start gap-2";
-                item.innerHTML = `
-                    <p class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1">${escapeHTML(note.content)}</p>
-                    <button onclick="deleteNote(${note.id})" class="text-red-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
-                `;
-                notesList.appendChild(item);
-            });
-        }
-
-        function deleteNote(id) {
-            let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]');
-            notes = notes.filter(n => n.id !== id);
-            localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes));
-            loadNotes();
-        }
-
-        function deleteChat() {
-            extendedMemory = []; localStorage.removeItem('zoya_memory');
-            document.getElementById('chatScreen').innerHTML = '';
-            appendZoyaMessage("Chat Delete ho gayi Boss! Ek fresh shuruwat karte hain. ✨", true);
-            toggleBottomSheet();
-        }
-
-        function startNewChat() {
-            extendedMemory = []; localStorage.removeItem('zoya_memory');
-            document.getElementById('chatScreen').innerHTML = '';
-            appendZoyaMessage("Nayi chat shuru ho gayi hai Boss! Boliye kya hukum hai?", true);
-            toggleSidebar();
-        }
-
+        function openNotebook() { document.getElementById('notebookModal').classList.add('active'); document.getElementById('notebookOverlay').style.display = 'block'; loadNotes(); if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); }
+        function closeNotebook() { document.getElementById('notebookModal').classList.remove('active'); document.getElementById('notebookOverlay').style.display = 'none'; }
+        function saveNote() { const noteInput = document.getElementById('noteInput'); const text = noteInput.value.trim(); if(!text) return; let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]'); notes.push({ id: Date.now(), content: text }); localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes)); noteInput.value = ""; loadNotes(); }
+        function loadNotes() { const notesList = document.getElementById('notesList'); notesList.innerHTML = ""; let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]'); if(notes.length === 0) { notesList.innerHTML = <p class="text-gray-500 text-xs text-center py-4">Koi note save nahi hai Boss!</p>; return; } notes.forEach(note => { const item = document.createElement('div'); item.className = "bg-[#1d1e20] p-2.5 rounded-lg border border-gray-800 flex justify-between items-start gap-2"; item.innerHTML = <p class="text-xs text-gray-300 break-all whitespace-pre-wrap flex-1">${escapeHTML(note.content)}</p><button onclick="deleteNote(${note.id})" class="text-red-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>; notesList.appendChild(item); }); }
+        function deleteNote(id) { let notes = JSON.parse(localStorage.getItem('zoya_notebook_notes') || '[]'); notes = notes.filter(n => n.id !== id); localStorage.setItem('zoya_notebook_notes', JSON.stringify(notes)); loadNotes(); }
+        function deleteChat() { extendedMemory = []; localStorage.removeItem('zoya_memory'); document.getElementById('chatScreen').innerHTML = ''; appendZoyaMessage("Chat Delete ho gayi Boss! Ek fresh shuruwat karte hain. ✨", true); toggleBottomSheet(); }
+        function startNewChat() { extendedMemory = []; localStorage.removeItem('zoya_memory'); document.getElementById('chatScreen').innerHTML = ''; appendZoyaMessage("Nayi chat shuru ho gayi hai Boss! Boliye kya hukum hai?", true); toggleSidebar(); }
         function openFeedback() { document.getElementById('feedbackModal').classList.add('active'); document.getElementById('feedbackOverlay').style.display = 'block'; if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); }
         function closeFeedback() { document.getElementById('feedbackModal').classList.remove('active'); document.getElementById('feedbackOverlay').style.display = 'none'; }
         
@@ -435,7 +357,7 @@
             document.getElementById('userName').innerText = userData.name;
             document.getElementById('userEmail').innerText = userData.email;
             document.getElementById('userInfo').style.display = 'flex';
-            appendZoyaMessage(`Swagat hai **${userData.name}**! Aap successfully login ho chuke hain. Kahiye kya madad karoon? ✨`, true);
+            appendZoyaMessage(Swagat hai **${userData.name}**! Aap successfully login ho chuke hain. Kahiye kya madad karoon? ✨, true);
         }
 
         document.getElementById('imageUpload').addEventListener('change', function(e) {
@@ -443,7 +365,7 @@
             const reader = new FileReader();
             reader.onload = function(event) {
                 const base64String = event.target.result.split(',')[1];
-                appendUserMessage(`<img src="${event.target.result}">`);
+                appendUserMessage(<img src="${event.target.result}">);
                 const payload = [ { inlineData: { data: base64String, mimeType: file.type } }, { text: "Is photo ko dhyan se dekho aur batao isme kya hai." } ];
                 extendedMemory.push({ role: "user", parts: payload });
                 saveMemory(); askZoyaRaw();
@@ -455,45 +377,87 @@
         const sendBtn = document.getElementById('sendBtn'); const micBtn = document.getElementById('micBtn');
         const waveContainer = document.getElementById('waveContainer');
 
-        if(micBtn) {
+        // ======= MIC BUTTON FIXED CODE =======
+        if (micBtn) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(SpeechRecognition) {
+            
+            if (SpeechRecognition) {
                 const recognition = new SpeechRecognition();
-                recognition.lang = 'hi-IN'; 
+                recognition.lang = 'hi-IN'; // Hindi-India language set
                 recognition.continuous = false;
+                recognition.interimResults = false;
+
+                let isRecording = false;
 
                 micBtn.addEventListener('click', () => {
-                    micBtn.classList.add('recording');
-                    userInput.placeholder = "Boliye Boss, Zoya sun rahi hai...";
-                    recognition.start();
+                    // Agar pehle se sun raha hai, toh stop kar do
+                    if (isRecording) {
+                        recognition.stop();
+                        return;
+                    }
+                    try {
+                        recognition.start();
+                    } catch (e) {
+                        console.error("Mic start error:", e);
+                    }
                 });
 
+                // Jab recording properly start ho jaye
+                recognition.onstart = () => {
+                    isRecording = true;
+                    micBtn.classList.add('recording');
+                    userInput.placeholder = "Boliye Boss, Zoya sun rahi hai...";
+                };
+
+                // Jab user bol chuke aur result aaye
                 recognition.onresult = (event) => {
                     const transcript = event.results[0][0].transcript;
                     userInput.value = transcript;
+                    sendBtn.click(); // Message auto-send ho jayega
+                };
+
+                // Agar koi error aaye (jaise permission denied)
+                recognition.onerror = (event) => {
+                    console.error("Voice Error:", event.error);
+                    isRecording = false;
                     micBtn.classList.remove('recording');
                     userInput.placeholder = "यहाँ मैसेज डालें...";
-                    sendBtn.click(); 
+                    
+                    if (event.error === 'not-allowed') {
+                        alert("Boss, browser mein Microphone ki permission allow karni padegi!");
+                    } else if (event.error === 'network') {
+                        alert("Boss, voice typing ke liye internet connection zaroori hai.");
+                    }
                 };
-                recognition.onerror = () => { micBtn.classList.remove('recording'); userInput.placeholder = "यहाँ मैसेज डालें..."; };
-                recognition.onend = () => { micBtn.classList.remove('recording'); userInput.placeholder = "यहाँ मैसेज डालें..."; };
+
+                // Jab recording end ho jaye (kisi bhi wajah se)
+                recognition.onend = () => {
+                    isRecording = false;
+                    micBtn.classList.remove('recording');
+                    userInput.placeholder = "यहाँ मैसेज डालें...";
+                };
+                
+            } else {
+                // Agar browser web speech API support nahi karta
+                micBtn.addEventListener('click', () => {
+                    alert("Boss, aapka browser voice typing support nahi karta. Kripya Google Chrome ka use karein!");
+                });
             }
         }
+        // ======= END MIC BUTTON CODE =======
 
         function appendUserMessage(htmlContent) {
             const d = document.createElement('div'); d.classList.add('message', 'user-msg');
-            d.innerHTML = `<div class="msg-bubble">${htmlContent}</div>`;
+            d.innerHTML = <div class="msg-bubble">${htmlContent}</div>;
             chatScreen.appendChild(d); chatScreen.scrollTop = chatScreen.scrollHeight;
         }
 
         function appendZoyaMessage(rawText, isTyping = false) {
             const id = 'msg-' + Date.now() + Math.floor(Math.random() * 1000);
             messageMemory[id] = rawText; 
-
             const d = document.createElement('div'); 
             d.classList.add('message', 'zoya-msg');
-            
-            d.innerHTML = `
+            d.innerHTML = 
                 <div class="zoya-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
                 <div class="msg-bubble" style="width: 100%;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
@@ -502,11 +466,10 @@
                     </div>
                     <div class="content-body" id="${id}"></div>
                 </div>
-            `;
+            ;
             chatScreen.appendChild(d);
             const bodyDiv = d.querySelector('.content-body');
             const parsedHTML = marked.parse(rawText);
-
             if (isTyping) {
                 let i = 0; let isTag = false; let text = "";
                 function type() {
@@ -536,33 +499,26 @@
         async function askZoyaRaw() {
             waveContainer.style.display = 'flex';
             document.getElementById('coreStatus').innerText = "Typing...";
-
             const requestPayload = { 
                 systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks." }] },
                 contents: extendedMemory
             };
-
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST', 
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(requestPayload)
                 });
-                
                 const resData = await response.json();
-                
                 if (resData.error) {
                     let exactError = resData.error.message || "Unknown error";
-                    let errMsg = `Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.`;
-                    
+                    let errMsg = Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.;
                     extendedMemory.pop(); saveMemory();
-                    
                     appendZoyaMessage(errMsg, true);
                     waveContainer.style.display = 'none';
                     document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
                     return;
                 }
-
                 let textReply = "";
                 if (resData && resData.candidates && resData.candidates[0]) {
                     const cand = resData.candidates[0];
@@ -570,7 +526,6 @@
                         cand.content.parts.forEach(part => { if (part.text) { textReply += part.text; } });
                     }
                 }
-
                 if(textReply && textReply.trim() !== "") {
                     extendedMemory.push({ role: "model", parts: [{ text: textReply }] });
                     saveMemory(); 
@@ -578,7 +533,7 @@
                 }
             } catch(e) {
                 extendedMemory.pop(); saveMemory();
-                appendZoyaMessage(`Boss, connection fail ho gaya. Error detail: **${e.message}**`, true); 
+                appendZoyaMessage(Boss, connection fail ho gaya. Error detail: **${e.message}**, true); 
             }
             waveContainer.style.display = 'none';
             document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";

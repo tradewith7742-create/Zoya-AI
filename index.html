@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ZOYA AI - Classic Sparkle Pro</title>
+    <title>ZOYA AI - Classic Sparkle 1.5 Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -11,7 +11,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* 📱 MOBILE SCREEN FIXES */
         body { background-color: #000000; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100dvh; overflow: hidden; }
         .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #131314; display: flex; flex-direction: column; position: relative; border: none; overflow: hidden; }
         
@@ -138,7 +137,7 @@
 
             <div class="chat-section-title">चैट हिस्ट्री</div>
             <div class="history-item active" id="mainHistoryCard">
-                <span class="chat-title">Zoya 2.5 Pro...</span>
+                <span class="chat-title">Zoya 1.5 Pro...</span>
                 <i class="fa-solid fa-thumbtack text-gray-600" id="historyPinIcon"></i>
             </div>
         </div>
@@ -187,7 +186,7 @@
                 <i class="fa-solid fa-bars menu-bars" onclick="toggleSidebar()"></i>
                 <div class="title-container">
                     <h1>ZOYA AI <i class="fa-solid fa-caret-down" style="font-size: 12px; color: #666; margin-left: 5px;"></i></h1>
-                    <p class="subtitle" id="coreStatus">2.5 Pro Active ✨</p>
+                    <p class="subtitle" id="coreStatus">1.5 Pro Active ✨</p>
                 </div>
             </div>
             <div class="header-right">
@@ -210,8 +209,11 @@
     </div>
 
     <script>
+        // AAPKI CHABI
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent?key=" + API_KEY;
+        
+        // 🔥 LATEST STABLE PRO ENGINE (100% FREE & FAST) 🔥
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
         
         let extendedMemory = [];
         let isPinned = false;
@@ -287,7 +289,6 @@
         window.onload = () => {
             loadBestVoice();
             
-            // 🔥 LOAD PIN STATUS FROM DATABASE 🔥
             isPinned = localStorage.getItem('zoya_is_pinned') === 'true';
             updatePinUI();
 
@@ -304,7 +305,7 @@
                     } else { appendZoyaMessage(msg.parts[0].text, false); }
                 });
             } else {
-                appendZoyaMessage("Hello Boss! Main Zoya hoon. Mera naya advanced **Gemini 2.5 Pro** engine active ho chuka hai! Boliye kya hukum hai?", true);
+                appendZoyaMessage("Hello Boss! Main ekdum stable aur free **Gemini 1.5 Pro Latest** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
             }
         };
 
@@ -312,7 +313,6 @@
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
         function toggleBottomSheet() { document.getElementById('bottomSheet').classList.toggle('active'); document.getElementById('sheetOverlay').classList.toggle('active'); }
         
-        // 🔥 ACTIVE PIN FUNCTION 🔥
         function togglePin() {
             isPinned = !isPinned;
             localStorage.setItem('zoya_is_pinned', isPinned);
@@ -339,7 +339,6 @@
             }
         }
 
-        // 🔥 ACTIVE NOTEBOOK FUNCTIONS 🔥
         function openNotebook() {
             document.getElementById('notebookModal').classList.add('active');
             document.getElementById('notebookOverlay').style.display = 'block';
@@ -418,7 +417,7 @@
                 await fetch("https://formspree.io/f/xwvzloyq", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Feedback: text, Sent_By: "Zoya App User" }) });
                 appendZoyaMessage("Boss, aapka feedback seedha meri email par bhej diya gaya hai! Main jald hi ispar action lungi. ✨", true);
             } catch(e) { appendZoyaMessage("Boss, network ki wajah se feedback send nahi hua.", true); }
-            document.getElementById('feedbackText').value = ""; document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨"; closeFeedback();
+            document.getElementById('feedbackText').value = ""; document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨"; closeFeedback();
         }
 
         function decodeJwtResponse(token) {
@@ -539,7 +538,7 @@
             document.getElementById('coreStatus').innerText = "Typing...";
 
             const requestPayload = { 
-                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks. You have access to Google Search." }] },
+                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep answers crisp and in Hinglish. You are an expert Python/App Developer. Format code blocks using markdown triple backticks." }] },
                 contents: extendedMemory
             };
 
@@ -555,10 +554,12 @@
                 if (resData.error) {
                     let exactError = resData.error.message || "Unknown error";
                     let errMsg = `Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.`;
+                    
                     extendedMemory.pop(); saveMemory();
+                    
                     appendZoyaMessage(errMsg, true);
                     waveContainer.style.display = 'none';
-                    document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨";
+                    document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
                     return;
                 }
 
@@ -580,7 +581,7 @@
                 appendZoyaMessage(`Boss, connection fail ho gaya. Error detail: **${e.message}**`, true); 
             }
             waveContainer.style.display = 'none';
-            document.getElementById('coreStatus').innerText = "2.5 Pro Active ✨";
+            document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
         }
 
         function escapeHTML(str) {

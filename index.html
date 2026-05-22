@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ZOYA AI - Classic Sparkle Pro</title>
+    <title>ZOYA AI - Ultimate Classic</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: #000; color: #fff; height: 100dvh; display: flex; justify-content: center; }
-        .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #131314; display: flex; flex-direction: column; }
+        .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #131314; display: flex; flex-direction: column; position: relative; }
         
-        /* Sidebar */
-        .sidebar { position: absolute; top: 0; left: -100%; width: 300px; height: 100%; background: #1e1f22; z-index: 1000; transition: left 0.3s; display: flex; flex-direction: column; }
+        /* Sidebar & Sheet */
+        .sidebar { position: absolute; top: 0; left: -100%; width: 300px; height: 100%; background: #1e1f22; z-index: 1000; transition: 0.3s; box-shadow: 5px 0 15px rgba(0,0,0,0.8); }
         .sidebar.active { left: 0; }
         .sidebar-item { padding: 15px 20px; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 15px; }
         .sidebar-item:hover { background: #282a2c; }
@@ -21,31 +21,33 @@
         /* Chat UI */
         .chat-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #131314; border-bottom: 1px solid #333; }
         .chat-screen { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-        .zoya-msg { display: flex; gap: 10px; }
+        .zoya-msg { display: flex; gap: 10px; align-self: flex-start; }
+        .user-msg { align-self: flex-end; background: #282a2c; padding: 10px 15px; border-radius: 20px; max-width: 80%; }
         .zoya-avatar { width: 30px; height: 30px; border-radius: 50%; background: #b388ff; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
         .msg-bubble { background: transparent; font-size: 15px; line-height: 1.6; }
         
-        /* Input & Notebook */
+        /* Input & Modals */
         .input-area { padding: 15px; background: #131314; }
         .input-wrapper { background: #1e1f20; border-radius: 30px; display: flex; align-items: center; padding: 5px 15px; }
         #userInput { flex: 1; background: none; border: none; color: #fff; padding: 10px; outline: none; }
         .modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #1e1f22; width: 85%; padding: 20px; border-radius: 15px; z-index: 1005; display: none; }
         .modal.active { display: block; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1004; display: none; }
     </style>
 </head>
 <body>
     <div class="app-container">
         <div class="sidebar" id="sidebar">
-            <div style="padding: 20px; color: #b388ff; font-weight: bold;">ZOYA MENU</div>
+            <div style="padding: 20px; color: #b388ff; font-weight: bold;">ZOYA AI MENU</div>
             <div class="sidebar-item" onclick="location.reload()"><i class="fa-solid fa-plus"></i> New Chat</div>
-            <div class="sidebar-item" onclick="openNotebook()"><i class="fa-solid fa-book"></i> Notebook</div>
+            <div class="sidebar-item" onclick="openModal('notebookModal')"><i class="fa-solid fa-book"></i> Notebook</div>
             <div class="sidebar-item" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i> Close</div>
         </div>
 
         <header class="chat-header">
             <i class="fa-solid fa-bars" onclick="toggleSidebar()" style="color:#b388ff; cursor:pointer;"></i>
-            <span style="font-weight:bold;">ZOYA AI</span>
-            <i class="fa-solid fa-thumbtack" onclick="alert('Chat Pinned!')" style="color:#b388ff; cursor:pointer;"></i>
+            <span style="font-weight:bold; color:#e3e3e3;">ZOYA AI</span>
+            <i class="fa-solid fa-thumbtack" id="pinBtn" onclick="togglePin()" style="color:#b388ff; cursor:pointer;"></i>
         </header>
 
         <main class="chat-screen" id="chatScreen"></main>
@@ -57,34 +59,51 @@
             </div>
         </footer>
 
+        <div class="overlay" id="overlay" onclick="closeAllModals()"></div>
+
         <div class="modal" id="notebookModal">
             <h3>My Notebook</h3>
-            <textarea id="noteInput" style="width:100%; height:100px; background:#131314; color:#fff; border:1px solid #444; margin:10px 0;"></textarea>
-            <button onclick="saveNote()" style="background:#b388ff; border:none; padding:10px; width:100%; border-radius:5px;">Save Note</button>
+            <textarea id="noteInput" style="width:100%; height:100px; background:#131314; color:#fff; border:1px solid #444; margin:10px 0; padding:10px; border-radius:8px;"></textarea>
+            <button onclick="saveNote()" style="background:#b388ff; border:none; padding:10px; width:100%; border-radius:5px; font-weight:bold;">Save Note</button>
         </div>
     </div>
 
     <script>
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
-        // 🔥 Engine set to 'gemini-1.5-flash' (Most Stable) 🔥
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
 
+        // UI Functions
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function openNotebook() { document.getElementById('notebookModal').classList.add('active'); toggleSidebar(); }
-        function closeNotebook() { document.getElementById('notebookModal').classList.remove('active'); }
-        function saveNote() { alert('Note Saved!'); closeNotebook(); }
+        function openModal(id) { document.getElementById(id).classList.add('active'); document.getElementById('overlay').style.display='block'; toggleSidebar(); }
+        function closeAllModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); document.getElementById('overlay').style.display='none'; }
+        
+        // Pin Logic
+        function togglePin() {
+            const btn = document.getElementById('pinBtn');
+            btn.style.color = btn.style.color === 'red' ? '#b388ff' : 'red';
+            alert('Chat Pinned!');
+        }
 
+        // Notebook Logic
+        function saveNote() {
+            const note = document.getElementById('noteInput').value;
+            localStorage.setItem('zoya_note', note);
+            alert('Note Saved!');
+            closeAllModals();
+        }
+
+        // Chat Logic
         const chatScreen = document.getElementById('chatScreen');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
 
         function appendMessage(text, isUser) {
             const d = document.createElement('div');
-            d.className = isUser ? "message" : "zoya-msg";
+            d.className = isUser ? "user-msg" : "zoya-msg";
             if(!isUser) {
                 d.innerHTML = `<div class="zoya-avatar"><i class="fa-solid fa-robot"></i></div><div class="msg-bubble">${marked.parse(text)}</div>`;
             } else {
-                d.innerHTML = `<div class="msg-bubble" style="background:#282a2c; padding:10px; border-radius:15px; align-self:flex-end;">${text}</div>`;
+                d.innerHTML = `${text}`;
             }
             chatScreen.appendChild(d);
             chatScreen.scrollTop = chatScreen.scrollHeight;
@@ -103,11 +122,10 @@
                     body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
                 });
                 const data = await response.json();
-                
-                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                if(data.candidates) {
                     appendMessage(data.candidates[0].content.parts[0].text, false);
                 } else {
-                    appendMessage("Error: Google quota issue. Please wait 1 minute.", false);
+                    appendMessage("Limit full ho gayi Boss, thoda wait kijiye!", false);
                 }
             } catch(e) {
                 appendMessage("Error: " + e.message, false);

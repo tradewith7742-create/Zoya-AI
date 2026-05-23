@@ -3,96 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ZOYA AI - Classic Sparkle 1.5 Pro</title>
+    <title>ZOYA AI - Pro Multi-Chat</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap');
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
         
-        body { background-color: #000000; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100dvh; overflow: hidden; }
+        body { background-color: #0f0f11; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100dvh; overflow: hidden; }
         .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #131314; display: flex; flex-direction: column; position: relative; border: none; overflow: hidden; }
         
-        .sidebar { position: absolute; top: 0; left: -100%; width: 300px; height: 100%; background: #1e1f22; z-index: 1000; transition: left 0.3s ease-in-out; display: flex; flex-direction: column; overflow-y: auto; padding-bottom: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.8); }
+        /* 🔥 SIDEBAR STYLES 🔥 */
+        .sidebar { position: absolute; top: 0; left: -100%; width: 310px; height: 100%; background: #000000; z-index: 1000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
         .sidebar.active { left: 0; }
-        .sidebar-search { margin: 20px 15px 15px 15px; background: #282a2c; border-radius: 25px; display: flex; align-items: center; padding: 10px 15px; }
-        .sidebar-search i { color: #b388ff; font-size: 16px; margin-right: 12px; }
-        .sidebar-search input { background: none; border: none; color: #e3e3e3; font-size: 15px; outline: none; width: 100%; }
-        .sidebar-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #e3e3e3; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.2s; border-radius: 10px; margin: 0 10px; }
-        .sidebar-item:hover { background: #282a2c; }
-        .sidebar-item-left { display: flex; align-items: center; }
-        .sidebar-item i.icon { margin-right: 15px; font-size: 16px; width: 20px; text-align: center; color: #b388ff; }
-        .chat-section-title { font-size: 13px; color: #b388ff; padding: 20px 20px 10px 20px; font-weight: 600; }
-        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; color: #c4c7c5; font-size: 14px; cursor: pointer; border-radius: 25px; margin: 0 10px 5px 10px; transition: all 0.2s; }
-        .history-item:hover { background: #282a2c; }
-        .history-item.active { background: rgba(179, 136, 255, 0.1); color: #b388ff; }
-        .sidebar-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999; display: none; }
-        .sidebar-overlay.active { display: block; }
         
-        .sheet-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1001; display: none; }
-        .sheet-overlay.active { display: block; }
-        .bottom-sheet { position: absolute; bottom: -100%; left: 0; width: 100%; background: #1e1f22; border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 1002; transition: bottom 0.3s ease-in-out; padding: 20px; display: flex; flex-direction: column; }
-        .bottom-sheet.active { bottom: 0; }
-        .sheet-drag-handle { width: 40px; height: 4px; background: #555; border-radius: 2px; margin: 0 auto 20px auto; }
-        .sheet-item { display: flex; align-items: center; padding: 16px 10px; color: #e3e3e3; font-size: 15px; font-weight: 500; cursor: pointer; border-radius: 10px; }
-        .sheet-item:hover { background: #282a2c; }
-        .sheet-item i { width: 35px; font-size: 18px; color: #b388ff; text-align: left; }
+        .sidebar-brand { font-size: 16px; font-weight: 700; letter-spacing: 1px; padding: 25px 20px 15px 20px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+        .sidebar-brand-text { display: flex; align-items: center; gap: 8px; }
         
-        .chat-header { padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; background: #131314; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .menu-bars { color: #b388ff; font-size: 20px; cursor: pointer; margin-right: 5px; padding: 5px; }
-        .title-container h1 { font-size: 16px; font-weight: 600; color: #e3e3e3; }
-        .subtitle { font-size: 10px; color: #b388ff; }
-        .header-right { display: flex; gap: 18px; align-items: center; }
-        .header-right i { color: #b388ff; font-size: 18px; cursor: pointer; }
+        .sidebar-item { display: flex; align-items: center; padding: 12px 20px; color: #e3e3e3; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; border-radius: 24px; margin: 2px 10px; }
+        .sidebar-item:hover { background: #1e1f22; }
+        .sidebar-item i.icon { margin-right: 18px; font-size: 16px; width: 20px; text-align: center; color: #c4c7c5; }
         
-        .chat-screen { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; background: #131314; }
-        .message { display: flex; flex-direction: column; width: 100%; }
+        .sidebar-heading { font-size: 13px; font-weight: 500; color: #8e8e8e; padding: 20px 20px 10px 20px; margin-top: 5px; }
+        
+        .history-list { flex: 1; overflow-y: auto; padding-bottom: 10px; display: flex; flex-direction: column; }
+        .history-list::-webkit-scrollbar { width: 4px; }
+        .history-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+        
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; color: #e3e3e3; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 24px; margin: 2px 10px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
+        .history-item:hover { background: #1e1f22; }
+        .history-item.active { background: #1e1f22; }
+        .history-item .del-btn { color: #555; font-size: 14px; transition: 0.2s; padding: 5px; border-radius: 50%; }
+        .history-item .del-btn:hover { color: #ff5252; background: rgba(255,82,82,0.1); }
+        .history-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 10px; display: flex; align-items: center; gap: 10px; }
+        
+        /* Sidebar Bottom Profile */
+        .sidebar-bottom { margin-top: auto; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; background: #000000; border-top: 1px solid #1e1f22; }
+        .profile-left { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .profile-avatar-ring { width: 42px; height: 42px; border-radius: 50%; background: conic-gradient(from 0deg, #ea4335, #4285f4, #34a853, #fbbc05, #ea4335); display: flex; justify-content: center; align-items: center; }
+        .profile-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #000; object-fit: cover; background: #222; }
+        .profile-info { display: flex; flex-direction: column; }
+        .profile-name { color: #fff; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .profile-badge { color: #888; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+
+        .sidebar-overlay, .sheet-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s; }
+        .sidebar-overlay.active, .sheet-overlay.active { display: block; opacity: 1; }
+        
+        /* Header */
+        .chat-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #131314; position: relative; z-index: 10; border-bottom: 1px solid #1e1f22;}
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .menu-bars { color: #e3e3e3; font-size: 18px; cursor: pointer; padding: 5px; transition: color 0.2s; }
+        .menu-bars:hover { color: #8ab4f8; }
+        .title-container h1 { font-size: 16px; font-weight: 600; color: #ffffff; letter-spacing: 0.5px; }
+        .subtitle { font-size: 11px; color: #8ab4f8; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        
+        /* Chat Screen */
+        .chat-screen { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; scroll-behavior: smooth; }
+        .chat-screen::-webkit-scrollbar { width: 6px; }
+        .chat-screen::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        .message { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .user-msg { align-items: flex-end; }
-        .user-msg .msg-bubble { background-color: #1e1f20; color: #e3e3e3; padding: 12px 18px; border-radius: 24px; border-bottom-right-radius: 4px; font-size: 15px; max-width: 85%; line-height: 1.5; border: none; }
+        .user-msg .msg-bubble { background-color: #1e1f22; color: #ffffff; padding: 12px 18px; border-radius: 20px 20px 4px 20px; font-size: 15px; max-width: 85%; line-height: 1.5; border: 1px solid #2a2b2f; }
+        
         .zoya-msg { align-items: flex-start; flex-direction: row; gap: 12px; max-width: 95%; }
-        .zoya-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #a8c7fa, #651fff); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 2px; }
-        .zoya-avatar i { color: #131314; font-size: 14px; }
-        .zoya-msg .msg-bubble { background-color: transparent; color: #e3e3e3; font-size: 15px; line-height: 1.6; padding: 4px 0 0 0; width: 100%; border: none; box-shadow: none; }
-        .zoya-msg .msg-bubble img { max-width: 100%; border-radius: 10px; margin-top: 5px; }
-        .zoya-msg .msg-bubble p { margin-bottom: 8px; }
+        .zoya-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #8ab4f8, #c58af9); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 2px; }
+        .zoya-avatar i { color: #000; font-size: 14px; }
+        .zoya-msg .msg-bubble { background-color: transparent; color: #e3e3e3; font-size: 15px; line-height: 1.6; padding: 4px 0 0 0; width: 100%; border: none; }
+        .zoya-msg .msg-bubble img { max-width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #333; }
+        .zoya-msg .msg-bubble p { margin-bottom: 10px; }
         .zoya-msg .msg-bubble p:last-child { margin-bottom: 0; }
-        .zoya-msg .msg-bubble strong { color: #b388ff; font-weight: 600; }
+        .zoya-msg .msg-bubble strong { color: #8ab4f8; font-weight: 600; }
         
-        .code-container { margin: 12px 0; border-radius: 8px; overflow: hidden; border: 1px solid #3c4043; box-shadow: 0 4px 6px rgba(0,0,0,0.3); background-color: #1e1f20; }
-        .code-header { background-color: #282a2c; padding: 8px 12px; display: flex; justify-content: space-between; align-items: center; color: #9aa0a6; font-size: 12px; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid #3c4043; }
-        .code-container pre { background: transparent; padding: 12px; border: none; overflow-x: auto; margin: 0; font-family: monospace; font-size: 13px; }
-        .code-container pre code { color: #ff9e80; }
-        .copy-btn { background-color: transparent; color: #a8c7fa; border: none; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 12px; display: flex; align-items: center; gap: 6px; }
-        .copy-btn:active { color: #81c995; }
-        .tts-btn { background: none; border: none; color: #666; cursor: pointer; transition: 0.2s; font-size: 15px; padding: 4px 8px; border-radius: 50%; }
-        .tts-btn:active { transform: scale(0.9); }
-        .tts-btn i.glowing-mic { color: #c58af9; animation: pulse 1s infinite; }
+        /* Code Block */
+        .code-container { margin: 15px 0; border-radius: 10px; overflow: hidden; border: 1px solid #333; background-color: #0f0f11; }
+        .code-header { background-color: #1a1c20; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; color: #888; font-size: 12px; font-family: monospace; border-bottom: 1px solid #333; }
+        .code-container pre { padding: 15px; overflow-x: auto; margin: 0; font-size: 13px; color: #e3e3e3; }
+        .copy-btn { background: none; color: #8ab4f8; border: none; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .tts-btn { background: none; border: none; color: #888; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 50%; }
+        .tts-btn:hover { color: #e3e3e3; }
         
-        .wave-container { padding: 10px 20px; display: none; align-items: center; gap: 10px; color: #b388ff; font-size: 13px; }
-        .glow-wave { width: 50px; height: 3px; background: #b388ff; box-shadow: 0 0 10px #b388ff; border-radius: 2px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.5; transform: scale(0.95); } }
+        .wave-container { padding: 10px 20px 20px 60px; display: none; align-items: center; gap: 8px; }
+        .dot-wave { display: flex; gap: 4px; }
+        .dot-wave div { width: 6px; height: 6px; background: #8ab4f8; border-radius: 50%; animation: jump 1.2s infinite ease-in-out; }
+        .dot-wave div:nth-child(2) { animation-delay: 0.2s; }
+        .dot-wave div:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes jump { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-6px); opacity: 1; } }
         
-        .input-area { padding: 10px 20px calc(20px + env(safe-area-inset-bottom)) 20px; background-color: #131314; position: relative; z-index: 10; border: none; }
-        .input-wrapper { background-color: #1e1f20; border-radius: 30px; display: flex; align-items: center; padding: 5px 8px; border: none; }
-        .icon-btn { background: none; border: none; color: #b388ff; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 40px; height: 40px; border-radius: 50%; transition: background 0.2s; }
-        .icon-btn.recording { color: #ff1744; animation: pulse 1s infinite; }
-        .icon-btn:hover { background-color: #333538; }
-        #userInput { flex: 1; background: none; border: none; color: #e3e3e3; font-size: 15px; padding: 12px 10px; outline: none; }
+        /* Input Area */
+        .input-area { padding: 15px 20px calc(20px + env(safe-area-inset-bottom)) 20px; background-color: #131314; position: relative; z-index: 10; border-top: 1px solid #222; }
+        .input-wrapper { background-color: #1e1f22; border-radius: 24px; display: flex; align-items: center; padding: 6px 8px; border: 1px solid #333; }
+        .icon-btn { background: none; border: none; color: #888; cursor: pointer; display: flex; justify-content: center; align-items: center; width: 36px; height: 36px; border-radius: 50%; transition: all 0.2s; }
+        .icon-btn:hover { color: #e3e3e3; background: #333; }
+        .icon-btn.recording { color: #ff5252; background: rgba(255, 82, 82, 0.1); }
+        #userInput { flex: 1; background: none; border: none; color: #ffffff; font-size: 15px; padding: 10px 12px; outline: none; }
+        .send-btn-active { color: #8ab4f8 !important; }
         
-        .feedback-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: #1e1f22; width: 85%; border-radius: 15px; padding: 20px; z-index: 1005; display: none; flex-direction: column; opacity: 0; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid #333; }
-        .feedback-modal.active { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .feedback-modal h3 { color: #b388ff; font-size: 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-        .feedback-modal p { color: #c4c7c5; font-size: 12px; margin-bottom: 15px; }
-        .feedback-modal textarea { width: 100%; height: 90px; background: #131314; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #e3e3e3; font-size: 14px; outline: none; resize: none; margin-bottom: 15px; }
-        .feedback-modal textarea:focus { border-color: #b388ff; }
-        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; }
-        .modal-btns button { padding: 8px 15px; border-radius: 6px; border: none; font-size: 13px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .cancel-btn { background: transparent; color: #c4c7c5; }
-        .cancel-btn:hover { background: #282a2c; }
-        .submit-btn { background: #b388ff; color: #131314; }
-        .submit-btn:hover { background: #9e6bff; }
+        /* Modals */
+        .custom-modal { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.95); background: #1a1c20; width: 90%; max-width: 400px; border-radius: 20px; padding: 24px; z-index: 1005; display: none; flex-direction: column; opacity: 0; transition: all 0.3s; box-shadow: 0 20px 40px rgba(0,0,0,0.8); border: 1px solid #333; }
+        .custom-modal.active { display: flex; transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .custom-modal h3 { color: #ffffff; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .modal-textarea { width: 100%; height: 100px; background: #0f0f11; border: 1px solid #333; border-radius: 12px; padding: 12px; color: #fff; font-size: 14px; outline: none; resize: none; margin-bottom: 20px; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 12px; }
+        .modal-btns button { padding: 10px 20px; border-radius: 10px; border: none; font-size: 14px; cursor: pointer; font-weight: 600; }
+        .btn-cancel { background: #2a2b2f; color: #e3e3e3; }
+        .btn-primary { background: #8ab4f8; color: #000; }
+        
+        .notes-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .note-item { background: #232529; padding: 12px; border-radius: 10px; border: 1px solid #333; display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .note-text { font-size: 13px; color: #ccc; word-break: break-all; }
     </style>
 </head>
 <body>
@@ -100,505 +121,305 @@
         <input type="file" id="imageUpload" accept="image/*" style="display: none;">
 
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+        
         <div class="sidebar" id="sidebar">
-            <div class="sidebar-search">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="चैट खोजें">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-text">ZOYA AI <i class="fa-solid fa-sparkles" style="color: #8ab4f8; font-size: 12px;"></i></div>
+                <i class="fa-solid fa-bars" style="color: #888; font-size: 18px; cursor: pointer;" onclick="toggleSidebar()"></i>
             </div>
-
-            <div id="userProfile" style="padding: 15px; display: flex; align-items: center; gap: 12px; background: #282a2c; margin: 0 15px 15px 15px; border-radius: 15px;">
-                <div id="g_id_onload"
-                     data-client_id="1039781921457-l9per5lepcgojlfa87p55e7gtiup2jsa.apps.googleusercontent.com"
-                     data-callback="handleGoogleLogin">
-                </div>
-                <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-text="signin_with" data-shape="pill"></div>
-                
-                <img id="userDP" src="" style="width: 40px; height: 40px; border-radius: 50%; display: none; border: 2px solid #b388ff;">
-                <div id="userInfo" style="display: none; flex-direction: column;">
-                    <span id="userName" style="color: #e3e3e3; font-size: 14px; font-weight: 600;"></span>
-                    <span id="userEmail" style="color: #b388ff; font-size: 10px;"></span>
-                </div>
-            </div>
-            <hr style="border: none; border-top: 1px solid #282a2c; margin: 0 20px 15px 20px;">
 
             <div class="sidebar-item" onclick="startNewChat()">
-                <div class="sidebar-item-left"><i class="fa-regular fa-pen-to-square icon"></i> नई चैट</div>
+                <i class="fa-solid fa-pen-to-square icon"></i> नई चैट
             </div>
             
+            <div class="sidebar-heading">नोटबुक</div>
             <div class="sidebar-item" onclick="openNotebook()">
-                <div class="sidebar-item-left"><i class="fa-solid fa-book icon"></i> नोटबुक</div>
+                <i class="fa-solid fa-book icon"></i> Zoya Notes
             </div>
 
-            <div class="sidebar-item" onclick="openFeedback()">
-                <div class="sidebar-item-left"><i class="fa-solid fa-circle-question icon"></i> सहायता / सुझाव दें</div>
-            </div>
+            <div class="sidebar-heading">हाल ही के (Recent Chats)</div>
+            <div class="history-list" id="historyList">
+                </div>
 
-            <div class="chat-section-title">चैट हिस्ट्री</div>
-            <div class="history-item active" id="mainHistoryCard">
-                <span class="chat-title">Zoya 1.5 Flash...</span>
-                <i class="fa-solid fa-thumbtack text-gray-600" id="historyPinIcon"></i>
+            <div class="sidebar-bottom">
+                <div id="authSection" style="display:none; width: 100%;">
+                    <div id="g_id_onload" data-client_id="1039781921457-l9per5lepcgojlfa87p55e7gtiup2jsa.apps.googleusercontent.com" data-callback="handleGoogleLogin"></div>
+                    <div class="g_id_signin" data-type="standard" data-theme="filled_black" data-shape="pill"></div>
+                </div>
+                
+                <div class="profile-left" id="userProfileSection">
+                    <div class="profile-avatar-ring"><img id="userDP" src="https://i.pravatar.cc/150?u=mkbhai" class="profile-avatar"></div>
+                    <div class="profile-info"><span class="profile-name" id="userName">MK BHAI</span><span class="profile-badge">PRO</span></div>
+                </div>
+                <i class="fa-solid fa-gear settings-icon" onclick="clearAllData()" title="Clear All Data"></i>
             </div>
         </div>
 
-        <div class="sheet-overlay" id="sheetOverlay" onclick="toggleBottomSheet()"></div>
-        <div class="bottom-sheet" id="bottomSheet">
-            <div class="sheet-drag-handle"></div>
-            
-            <div class="sheet-item" onclick="togglePin()">
-                <i class="fa-solid fa-thumbtack" id="pinIcon"></i><span id="pinText">पिन करें</span>
-            </div>
-
-            <div class="sheet-item" onclick="deleteChat()" style="color: #ff1744;">
-                <i class="fa-solid fa-trash" style="color: #ff1744;"></i><span>मिटाएँ</span>
-            </div>
-        </div>
-
-        <div class="sheet-overlay" id="feedbackOverlay" onclick="closeFeedback()" style="z-index: 1004;"></div>
-        <div class="feedback-modal" id="feedbackModal">
-            <h3><i class="fa-solid fa-comment-dots"></i> सुझाव या शिकायत</h3>
-            <p>Zoya AI ko aur behtar banane ke liye apna feedback yahan likhein:</p>
-            <textarea id="feedbackText" placeholder="Boss, apni baat yahan likhiye..."></textarea>
-            <div class="modal-btns">
-                <button class="cancel-btn" onclick="closeFeedback()">रद्द करें</button>
-                <button class="submit-btn" onclick="submitFeedback()">सबमिट करें</button>
-            </div>
-        </div>
-
-        <div class="sheet-overlay" id="notebookOverlay" onclick="closeNotebook()" style="z-index: 1008;"></div>
-        <div class="feedback-modal" id="notebookModal" style="z-index: 1009; max-height: 80vh; overflow-y: auto;">
-            <h3><i class="fa-solid fa-book text-[#b388ff]"></i> मेरी पर्सनल नोटबुक</h3>
-            <p>Boss, yahan trading strategies ya important text save kijiye:</p>
-            <textarea id="noteInput" placeholder="Yahan apna note type karein..." style="width: 100%; height: 90px; background: #131314; border: 1px solid #333; border-radius: 8px; padding: 10px; color: #e3e3e3; font-size: 14px; outline: none; resize: none; margin-bottom: 15px;"></textarea>
-            <button onclick="saveNote()" class="submit-btn" style="width: 100%; padding: 10px; background: #b388ff; color: black; font-weight: bold; border-radius: 8px; margin-bottom: 15px;">Note Save Karein</button>
-            
-            <div style="font-size: 12px; font-weight: bold; color: #b388ff; margin-bottom: 8px; text-transform: uppercase;">Saved Notes:</div>
-            <div id="notesList" style="max-height: 150px; overflow-y: auto;"></div>
-            
-            <div class="modal-btns mt-4">
-                <button class="cancel-btn" onclick="closeNotebook()">बंद करें</button>
-            </div>
+        <div class="sheet-overlay" id="modalOverlay" onclick="closeModals()" style="z-index: 1004;"></div>
+        <div class="custom-modal" id="notebookModal">
+            <h3><i class="fa-solid fa-book"></i> Zoya's Notebook</h3>
+            <textarea class="modal-textarea" id="noteInput" placeholder="Enter note..."></textarea>
+            <button class="btn-primary" onclick="saveNote()" style="width: 100%; margin-bottom: 20px;">Save Note</button>
+            <div class="notes-list" id="notesList"></div>
+            <div class="modal-btns"><button class="btn-cancel" onclick="closeModals()">Close</button></div>
         </div>
 
         <header class="chat-header">
             <div class="header-left">
                 <i class="fa-solid fa-bars menu-bars" onclick="toggleSidebar()"></i>
                 <div class="title-container">
-                    <h1>ZOYA AI <i class="fa-solid fa-caret-down" style="font-size: 12px; color: #666; margin-left: 5px;"></i></h1>
-                    <p class="subtitle" id="coreStatus">1.5 Flash Active ✨</p>
+                    <h1>ZOYA AI</h1>
+                    <p class="subtitle">Multi-Chat Active ✨</p>
                 </div>
             </div>
             <div class="header-right">
-                <i class="fa-solid fa-ellipsis-vertical" onclick="toggleBottomSheet()"></i>
+                <button onclick="startNewChat()" style="background: none; border: none; color: #8ab4f8; cursor: pointer;"><i class="fa-solid fa-plus text-lg"></i></button>
             </div>
         </header>
 
         <main class="chat-screen" id="chatScreen"></main>
         
-        <div class="wave-container" id="waveContainer"><i class="fa-solid fa-wand-magic-sparkles"></i> <div class="glow-wave"></div></div>
+        <div class="wave-container" id="waveContainer">
+            <span style="font-size: 12px; color: #8ab4f8; font-weight: 600;">Zoya is typing</span>
+            <div class="dot-wave"><div></div><div></div><div></div></div>
+        </div>
 
         <footer class="input-area">
             <div class="input-wrapper">
-                <button class="icon-btn" onclick="document.getElementById('imageUpload').click()"><i class="fa-solid fa-plus"></i></button>
-                <input type="text" id="userInput" placeholder="यहाँ मैसेज डालें..." autocomplete="off">
+                <button class="icon-btn" onclick="document.getElementById('imageUpload').click()"><i class="fa-solid fa-image"></i></button>
+                <input type="text" id="userInput" placeholder="Ask Zoya anything..." autocomplete="off">
                 <button class="icon-btn" id="micBtn"><i class="fa-solid fa-microphone"></i></button>
-                <button class="icon-btn" id="sendBtn" style="color: #b388ff;"><i class="fa-solid fa-paper-plane"></i></button>
+                <button class="icon-btn" id="sendBtn" style="display: none;"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </footer>
     </div>
 
     <script>
-        // 👇 MAINE YAHAN AAPKI NAYI API KEY DAAL DI HAI 👇
-        const API_KEY = "AQ.Ab8RN6JNoKd2SySiAi-nnIjDPLse2buYZeSM1wgkpxqpY4FRFw"; 
+        const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
         
-        const API_URL = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
-        
-        let extendedMemory = [];
-        let isPinned = false;
+        const SYSTEM_PROMPT = `Your name is ZOYA. You are an extremely advanced AI assistant built for 'Boss'. Powered by Gemini 1.5 Pro. Address user as 'Boss'. Keep tone respectful, conversational in Hinglish. 
+CRITICAL SUPERPOWER - IMAGE GENERATION: 
+If Boss asks to draw/create an image, reply ONLY with this format: ![Generated Image](https://image.pollinations.ai/prompt/YOUR_DETAILED_ENGLISH_PROMPT_HERE?width=1024&height=1024&nologo=true) . Use %20 for spaces.`;
+
+        // 🔥 NEW DATABASE STRUCTURE 🔥
+        let allChats = {}; 
+        let currentChatId = null;
+        let extendedMemory = []; 
         const messageMemory = {}; 
-        let currentSpeakingId = null;
-        let zoyaBestVoice = null;
+        let zoyaVoice = null;
 
-        // SAFE LOCAL STORAGE FUNCTIONS
-        function safeSetStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage Blocked"); } }
-        function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
-        function safeRemoveStorage(key) { try { localStorage.removeItem(key); } catch(e) { } }
+        const storage = {
+            set: (k, v) => { try { localStorage.setItem(k, v); } catch(e){} },
+            get: (k) => { try { return localStorage.getItem(k); } catch(e){ return null; } },
+            remove: (k) => { try { localStorage.removeItem(k); } catch(e){} }
+        };
 
-        function loadBestVoice() {
-            try {
-                if ('speechSynthesis' in window) {
-                    const voices = window.speechSynthesis.getVoices();
-                    zoyaBestVoice = voices.find(v => v.name.includes('Google') && v.lang.includes('hi-IN')) || voices.find(v => v.lang === 'hi-IN');
-                }
-            } catch(e) { console.warn("Voice API Blocked"); }
-        }
-        
-        if ('speechSynthesis' in window) {
-            try { window.speechSynthesis.onvoiceschanged = loadBestVoice; } catch(e) {}
-        }
+        function initVoice() { try { if ('speechSynthesis' in window) { const voices = window.speechSynthesis.getVoices(); zoyaVoice = voices.find(v => v.name.includes('Google') && v.lang.includes('hi-IN')) || voices.find(v => v.lang.startsWith('hi')) || voices[0]; } } catch(e) {} }
+        if ('speechSynthesis' in window) window.speechSynthesis.onvoiceschanged = initVoice;
 
-        // SAFE MARKED.JS INITIALIZATION
         try {
             if (typeof marked !== 'undefined') {
                 const renderer = new marked.Renderer();
-                renderer.code = function(code, language) {
-                    const escapedCode = code.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-                    return `<div class="code-container"><div class="code-header"><span>${language || 'code'}</span><button class="copy-btn"><i class="fa-regular fa-copy"></i> Copy</button></div><pre><code>${escapedCode}</code></pre></div>`;
+                renderer.code = (code, lang) => {
+                    const esc = code.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t));
+                    return `<div class="code-container"><div class="code-header"><span>${lang || 'code'}</span><button class="copy-btn"><i class="fa-solid fa-copy"></i> Copy</button></div><pre><code>${esc}</code></pre></div>`;
                 };
-                marked.setOptions({ renderer: renderer, breaks: true, gfm: true });
+                marked.setOptions({ renderer, breaks: true, gfm: true });
             }
-        } catch(e) { console.warn("Markdown Error"); }
+        } catch(e) {}
+
+        // 🌟 INIT MULTI-CHAT DB 🌟
+        window.onload = () => {
+            initVoice();
+            try {
+                const savedDb = storage.get('zoya_all_chats_db');
+                if (savedDb) allChats = JSON.parse(savedDb);
+                
+                const savedId = storage.get('zoya_curr_id');
+                if (savedId && allChats[savedId]) {
+                    loadChat(savedId, false);
+                } else {
+                    const ids = Object.keys(allChats);
+                    if(ids.length > 0) loadChat(ids[ids.length-1], false);
+                    else startNewChat(false);
+                }
+            } catch(e) { startNewChat(false); }
+        };
+
+        function saveDb() {
+            if (currentChatId) {
+                allChats[currentChatId].memory = extendedMemory;
+                // Auto generate title if it's new
+                if (allChats[currentChatId].title === "New Chat" && extendedMemory.length > 0) {
+                    const firstMsg = extendedMemory.find(m => m.role === 'user');
+                    if (firstMsg && firstMsg.parts[0].text) {
+                        let shortTitle = firstMsg.parts[0].text.substring(0, 20);
+                        allChats[currentChatId].title = shortTitle + (shortTitle.length >= 20 ? '...' : '');
+                    }
+                }
+            }
+            storage.set('zoya_all_chats_db', JSON.stringify(allChats));
+            storage.set('zoya_curr_id', currentChatId);
+            renderSidebarHistory();
+        }
+
+        function renderSidebarHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = '';
+            const ids = Object.keys(allChats).reverse();
+            ids.forEach(id => {
+                const chat = allChats[id];
+                const activeCls = id === currentChatId ? 'active' : '';
+                list.innerHTML += `
+                    <div class="history-item ${activeCls}" onclick="loadChat('${id}')">
+                        <span class="history-text"><i class="fa-regular fa-message"></i> ${escapeHTML(chat.title)}</span>
+                        <i class="fa-solid fa-trash del-btn" onclick="event.stopPropagation(); deleteChat('${id}')"></i>
+                    </div>
+                `;
+            });
+        }
+
+        function loadChat(id, openSide = true) {
+            currentChatId = id;
+            extendedMemory = [...allChats[id].memory];
+            document.getElementById('chatScreen').innerHTML = '';
+            if (extendedMemory.length === 0) { appendZoya("Hello Boss! Nayi chat mein aapka swagat hai.", true); } 
+            else {
+                extendedMemory.forEach(m => {
+                    if(m.role === "user") {
+                        if(m.parts[0].text) appendUser(m.parts[0].text);
+                        else if(m.parts[0].inlineData) appendUser(`<img src="data:${m.parts[0].inlineData.mimeType};base64,${m.parts[0].inlineData.data}" style="max-width:100%; border-radius:10px;">`);
+                    } else appendZoya(m.parts[0].text, false);
+                });
+            }
+            saveDb();
+            if(openSide) closeSidebar();
+        }
+
+        function startNewChat(openSide = true) {
+            const newId = 'chat_' + Date.now();
+            currentChatId = newId;
+            extendedMemory = [];
+            allChats[newId] = { title: "New Chat", memory: [] };
+            document.getElementById('chatScreen').innerHTML = '';
+            appendZoya("Nayi Chat start ho gayi hai Boss! Boliye kya hukum hai?", true);
+            saveDb();
+            if(openSide) closeSidebar();
+        }
+
+        function deleteChat(id) {
+            delete allChats[id];
+            const remaining = Object.keys(allChats);
+            if(remaining.length === 0) { startNewChat(false); } 
+            else if(currentChatId === id) { loadChat(remaining[remaining.length-1], false); }
+            else { saveDb(); }
+        }
+
+        function clearAllData() {
+            if(confirm("Boss, kya aap saari chats delete karna chahte hain?")) {
+                allChats = {}; extendedMemory = []; storage.remove('zoya_all_chats_db'); storage.remove('zoya_curr_id'); startNewChat(false);
+            }
+        }
+
+        const toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); };
+        function closeSidebar() { document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebarOverlay').classList.remove('active'); }
+        const closeModals = () => { document.querySelectorAll('.custom-modal').forEach(m => m.classList.remove('active')); document.getElementById('modalOverlay').classList.remove('active'); };
+
+        function openNotebook() { document.getElementById('notebookModal').classList.add('active'); document.getElementById('modalOverlay').classList.add('active'); loadNotes(); closeSidebar(); }
+        function saveNote() { const val = document.getElementById('noteInput').value.trim(); if(!val) return; let n = JSON.parse(storage.get('zoya_notes') || '[]'); n.push({ id: Date.now(), text: val }); storage.set('zoya_notes', JSON.stringify(n)); document.getElementById('noteInput').value = ""; loadNotes(); }
+        function loadNotes() { const list = document.getElementById('notesList'); list.innerHTML = ""; let n = JSON.parse(storage.get('zoya_notes') || '[]'); if(!n.length) { list.innerHTML = '<p style="text-align:center;">Box is empty.</p>'; return; } n.forEach(note => { list.innerHTML += `<div class="note-item"><div class="note-text">${escapeHTML(note.text)}</div><button onclick="delNote(${note.id})" style="color:#ff5252; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></div>`; }); }
+        function delNote(id) { let n = JSON.parse(storage.get('zoya_notes') || '[]'); n = n.filter(x => x.id !== id); storage.set('zoya_notes', JSON.stringify(n)); loadNotes(); }
+        
+        function handleGoogleLogin(res) {
+            try {
+                const payload = JSON.parse(decodeURIComponent(atob(res.credential.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('userDP').src = payload.picture; document.getElementById('userName').innerText = payload.name; 
+                document.getElementById('userProfileSection').style.display = 'flex';
+            } catch(e) {}
+        }
+
+        document.getElementById('imageUpload').addEventListener('change', e => {
+            const f = e.target.files[0]; if(!f) return; const r = new FileReader();
+            r.onload = ev => {
+                const b64 = ev.target.result.split(',')[1]; appendUser(`<img src="${ev.target.result}" style="max-width:100%; border-radius:10px;">`);
+                extendedMemory.push({ role: "user", parts: [ { inlineData: { data: b64, mimeType: f.type } }, { text: "Describe this image." } ] });
+                saveDb(); triggerAI();
+            }; r.readAsDataURL(f); e.target.value = "";
+        });
+
+        const inputField = document.getElementById('userInput'); const sendBtn = document.getElementById('sendBtn'); const micBtn = document.getElementById('micBtn');
+        inputField.addEventListener('input', () => { if(inputField.value.trim().length > 0) { micBtn.style.display = 'none'; sendBtn.style.display = 'flex'; sendBtn.classList.add('send-btn-active'); } else { micBtn.style.display = 'flex'; sendBtn.style.display = 'none'; sendBtn.classList.remove('send-btn-active'); } });
+        inputField.addEventListener('keypress', e => { if (e.key === 'Enter') handleSend(); });
+        sendBtn.addEventListener('click', handleSend);
+
+        function handleSend() {
+            const t = inputField.value.trim(); if(!t) return;
+            inputField.value = ""; inputField.dispatchEvent(new Event('input'));
+            appendUser(t); extendedMemory.push({ role: "user", parts: [{ text: t }] });
+            saveDb(); triggerAI();
+        }
+
+        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+            try {
+                const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const rec = new SR(); rec.lang = 'hi-IN'; rec.continuous = false; let isRec = false;
+                micBtn.addEventListener('click', () => { if(isRec) { rec.stop(); return; } try { rec.start(); } catch(e){} });
+                rec.onstart = () => { isRec = true; micBtn.classList.add('recording'); inputField.placeholder = "Listening..."; };
+                rec.onresult = e => { if(e.results[0]) { inputField.value = e.results[0][0].transcript; handleSend(); } };
+                rec.onerror = e => { isRec = false; micBtn.classList.remove('recording'); inputField.placeholder = "Ask Zoya anything..."; };
+                rec.onend = () => { isRec = false; micBtn.classList.remove('recording'); inputField.placeholder = "Ask Zoya anything..."; };
+            } catch(e) {}
+        }
+
+        function appendUser(html) { const d = document.createElement('div'); d.className = 'message user-msg'; d.innerHTML = `<div class="msg-bubble">${html}</div>`; document.getElementById('chatScreen').appendChild(d); d.scrollIntoView({behavior: "smooth"}); }
+        function appendZoya(text, type = false) {
+            const id = 'msg-' + Date.now(); messageMemory[id] = text;
+            const d = document.createElement('div'); d.className = 'message zoya-msg';
+            d.innerHTML = `<div class="zoya-avatar"><i class="fa-solid fa-sparkles"></i></div><div class="msg-bubble"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><span style="color:#8ab4f8; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Zoya</span><button class="tts-btn" onclick="speak('${id}')"><i class="fa-solid fa-volume-high"></i></button></div><div class="content-body" id="${id}"></div></div>`;
+            document.getElementById('chatScreen').appendChild(d); const body = d.querySelector('.content-body');
+            let html = text; try { if(typeof marked !== 'undefined') html = marked.parse(text); } catch(e){}
+            if (type) { let i = 0, isT = false, curr = ""; const tFn = () => { if (i < html.length) { curr += html[i]; if (html[i] === '<') isT = true; if (html[i] === '>') isT = false; body.innerHTML = curr; i++; if (isT) tFn(); else setTimeout(tFn, 5); d.scrollIntoView(); } }; tFn(); } else { body.innerHTML = html; d.scrollIntoView(); }
+        }
+        function escapeHTML(s) { return s.replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t] || t)); }
+
+        let currentSpeakingId = null;
+        function speak(id) {
+            if (!('speechSynthesis' in window)) return;
+            const btn = document.querySelector(`button[onclick="speak('${id}')"] i`);
+            if (window.speechSynthesis.speaking && currentSpeakingId === id) { window.speechSynthesis.cancel(); btn.className = 'fa-solid fa-volume-high'; currentSpeakingId = null; return; }
+            window.speechSynthesis.cancel(); document.querySelectorAll('.tts-btn i').forEach(i => i.className = 'fa-solid fa-volume-high');
+            let text = messageMemory[id]; if(!text) return;
+            text = text.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai. ').replace(/[*#_]/g, '').replace(/!\[.*?\]\(.*?\)/g, ' Ye lijiye image. ');
+            try {
+                const utt = new SpeechSynthesisUtterance(text); utt.lang = 'hi-IN'; utt.rate = 1.0; if(zoyaVoice) utt.voice = zoyaVoice;
+                utt.onstart = () => { btn.className = 'fa-solid fa-stop glowing-mic'; currentSpeakingId = id; };
+                utt.onend = utt.onerror = () => { btn.className = 'fa-solid fa-volume-high'; btn.classList.remove('glowing-mic'); currentSpeakingId = null; };
+                window.speechSynthesis.speak(utt);
+            } catch(err) {}
+        }
 
         document.getElementById('chatScreen').addEventListener('click', async (e) => {
             const copyBtn = e.target.closest('.copy-btn');
             if (copyBtn) {
-                const codeElement = copyBtn.parentElement.nextElementSibling.querySelector('code');
-                if (codeElement) {
-                    const textArea = document.createElement('textarea');
-                    textArea.innerHTML = codeElement.innerHTML;
-                    try {
-                        await navigator.clipboard.writeText(textArea.value);
-                        const originalText = copyBtn.innerHTML;
-                        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-                        copyBtn.style.color = '#81c995';
-                        setTimeout(() => { copyBtn.innerHTML = originalText; copyBtn.style.color = '#a8c7fa'; }, 2000);
-                    } catch(err) { console.warn("Clipboard access denied"); }
+                const codeNode = copyBtn.parentElement.nextElementSibling.querySelector('code');
+                if (codeNode) {
+                    const ta = document.createElement('textarea'); ta.innerHTML = codeNode.innerHTML;
+                    try { await navigator.clipboard.writeText(ta.value); copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied'; copyBtn.style.color = '#81c995'; setTimeout(() => { copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy'; copyBtn.style.color = '#8ab4f8'; }, 2000); } catch(err) {}
                 }
-                return;
-            }
-            const ttsBtn = e.target.closest('.tts-btn');
-            if (ttsBtn) {
-                if (!('speechSynthesis' in window)) return;
-                const id = ttsBtn.getAttribute('data-id');
-                const icon = ttsBtn.querySelector('i');
-                if (window.speechSynthesis.speaking && currentSpeakingId === id) {
-                    window.speechSynthesis.cancel();
-                    icon.className = 'fa-solid fa-volume-high';
-                    currentSpeakingId = null;
-                    return;
-                }
-                window.speechSynthesis.cancel(); 
-                let textToSpeak = messageMemory[id] || "";
-                if(!textToSpeak) return;
-                textToSpeak = textToSpeak.replace(/```[\s\S]*?```/g, ' Yahan maine code diya hai, jise aap box me dekh sakte hain. ');
-                textToSpeak = textToSpeak.replace(/[*#_]/g, '');
-                
-                try {
-                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-                    utterance.lang = 'hi-IN';
-                    utterance.rate = 1.0;
-                    if(zoyaBestVoice) utterance.voice = zoyaBestVoice;
-                    utterance.onstart = () => {
-                        document.querySelectorAll('.tts-btn i').forEach(i => i.className = 'fa-solid fa-volume-high');
-                        icon.className = 'fa-solid fa-stop glowing-mic';
-                        currentSpeakingId = id;
-                    };
-                    utterance.onend = () => { icon.className = 'fa-solid fa-volume-high'; icon.classList.remove('glowing-mic'); currentSpeakingId = null; };
-                    utterance.onerror = () => { icon.className = 'fa-solid fa-volume-high'; currentSpeakingId = null; };
-                    window.speechSynthesis.speak(utterance);
-                } catch(err) { console.warn("Speech Synthesis failed", err); }
             }
         });
 
-        window.onload = () => {
-            loadBestVoice();
-            isPinned = safeGetStorage('zoya_is_pinned') === 'true';
-            updatePinUI();
-            
-            const savedMemory = safeGetStorage('zoya_memory');
-            let hasMemoryLoaded = false;
-            
-            if (savedMemory) {
-                try {
-                    extendedMemory = JSON.parse(savedMemory);
-                    extendedMemory.forEach(msg => {
-                        if(msg.role === "user") {
-                            if(msg.parts[0].text) appendUserMessage(msg.parts[0].text);
-                            else if(msg.parts[0].inlineData) {
-                                const imgUrl = `data:${msg.parts[0].inlineData.mimeType};base64,${msg.parts[0].inlineData.data}`;
-                                appendUserMessage(`<img src="${imgUrl}">`);
-                            }
-                        } else { appendZoyaMessage(msg.parts[0].text, false); }
-                    });
-                    hasMemoryLoaded = true;
-                } catch(e) { console.warn("Memory parse error"); }
-            } 
-            
-            if (!hasMemoryLoaded) {
-                appendZoyaMessage("Hello Boss! Main ekdum stable aur super-fast **Gemini 1.5 Flash (v1 Version)** engine ke sath wapas aa gayi hoon. Ab koi error nahi aayega! Boliye kya hukum hai?", true);
-            }
-        };
-
-        function saveMemory() { safeSetStorage('zoya_memory', JSON.stringify(extendedMemory)); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-        function toggleBottomSheet() { document.getElementById('bottomSheet').classList.toggle('active'); document.getElementById('sheetOverlay').classList.toggle('active'); }
-        function togglePin() { isPinned = !isPinned; safeSetStorage('zoya_is_pinned', isPinned); updatePinUI(); toggleBottomSheet(); }
-
-        function updatePinUI() {
-            const pinText = document.getElementById('pinText');
-            const pinIcon = document.getElementById('pinIcon');
-            const historyCard = document.getElementById('mainHistoryCard');
-            const historyPinIcon = document.getElementById('historyPinIcon');
-            if(isPinned) {
-                if(pinText) pinText.innerText = "अनपिन करें";
-                if(pinIcon) pinIcon.className = "fa-solid fa-thumbtack-slash";
-                if(historyCard) historyCard.style.border = "1px solid #b388ff";
-                if(historyPinIcon) { historyPinIcon.className = "fa-solid fa-thumbtack text-[#b388ff]"; }
-            } else {
-                if(pinText) pinText.innerText = "पिन करें";
-                if(pinIcon) pinIcon.className = "fa-solid fa-thumbtack";
-                if(historyCard) historyCard.style.border = "none";
-                if(historyPinIcon) { historyPinIcon.className = "fa-solid fa-thumbtack text-gray-600"; }
-            }
-        }
-
-        function openNotebook() { document.getElementById('notebookModal').classList.add('active'); document.getElementById('notebookOverlay').style.display = 'block'; loadNotes(); if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); }
-        function closeNotebook() { document.getElementById('notebookModal').classList.remove('active'); document.getElementById('notebookOverlay').style.display = 'none'; }
-        
-        function saveNote() { 
-            const noteInput = document.getElementById('noteInput'); 
-            const text = noteInput.value.trim(); 
-            if(!text) return; 
-            let notes = [];
-            try { notes = JSON.parse(safeGetStorage('zoya_notebook_notes') || '[]'); } catch(e){}
-            notes.push({ id: Date.now(), content: text }); 
-            safeSetStorage('zoya_notebook_notes', JSON.stringify(notes)); 
-            noteInput.value = ""; 
-            loadNotes(); 
-        }
-        
-        function loadNotes() { 
-            const notesList = document.getElementById('notesList'); 
-            notesList.innerHTML = ""; 
-            let notes = [];
-            try { notes = JSON.parse(safeGetStorage('zoya_notebook_notes') || '[]'); } catch(e){}
-            if(notes.length === 0) { notesList.innerHTML = `<p style="color: #666; font-size: 12px; text-align: center; padding: 10px 0;">Koi note save nahi hai Boss!</p>`; return; } 
-            notes.forEach(note => { 
-                const item = document.createElement('div'); 
-                item.style.cssText = "background: #1d1e20; padding: 10px; border-radius: 8px; border: 1px solid #333; display: flex; justify-content: space-between; margin-bottom: 8px;"; 
-                item.innerHTML = `<p style="font-size: 12px; color: #ccc; word-break: break-all; flex: 1;">${escapeHTML(note.content)}</p><button onclick="deleteNote(${note.id})" style="color: #ff1744; background: none; border: none; cursor: pointer; padding: 0 5px;"><i class="fa-solid fa-trash"></i></button>`; 
-                notesList.appendChild(item); 
-            }); 
-        }
-        
-        function deleteNote(id) { 
-            let notes = [];
-            try { notes = JSON.parse(safeGetStorage('zoya_notebook_notes') || '[]'); } catch(e){}
-            notes = notes.filter(n => n.id !== id); 
-            safeSetStorage('zoya_notebook_notes', JSON.stringify(notes)); 
-            loadNotes(); 
-        }
-        
-        function deleteChat() { extendedMemory = []; safeRemoveStorage('zoya_memory'); document.getElementById('chatScreen').innerHTML = ''; appendZoyaMessage("Chat Delete ho gayi Boss! Ek fresh shuruwat karte hain. ✨", true); toggleBottomSheet(); }
-        function startNewChat() { extendedMemory = []; safeRemoveStorage('zoya_memory'); document.getElementById('chatScreen').innerHTML = ''; appendZoyaMessage("Nayi chat shuru ho gayi hai Boss! Boliye kya hukum hai?", true); toggleSidebar(); }
-        function openFeedback() { document.getElementById('feedbackModal').classList.add('active'); document.getElementById('feedbackOverlay').style.display = 'block'; if(document.getElementById('sidebar').classList.contains('active')) toggleSidebar(); }
-        function closeFeedback() { document.getElementById('feedbackModal').classList.remove('active'); document.getElementById('feedbackOverlay').style.display = 'none'; }
-        
-        async function submitFeedback() {
-            let text = document.getElementById('feedbackText').value;
-            if(text.trim() === "") return;
-            document.getElementById('coreStatus').innerText = "Email bhej raha hoon...";
+        async function triggerAI() {
+            document.getElementById('waveContainer').style.display = 'flex';
             try {
-                await fetch("https://formspree.io/f/xwvzloyq", { method: "POST", headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ Feedback: text, Sent_By: "Zoya App User" }) });
-                appendZoyaMessage("Boss, aapka feedback seedha meri email par bhej diya gaya hai! Main jald hi ispar action lungi. ✨", true);
-            } catch(e) { appendZoyaMessage("Boss, network ki wajah se feedback send nahi hua.", true); }
-            document.getElementById('feedbackText').value = ""; document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨"; closeFeedback();
-        }
-
-        function decodeJwtResponse(token) {
-            try {
-                let base64Url = token.split('.')[1];
-                let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-                let jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) { return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2); }).join(''));
-                return JSON.parse(jsonPayload);
-            } catch(e) { return null; }
-        }
-
-        function handleGoogleLogin(response) {
-            const userData = decodeJwtResponse(response.credential);
-            if(!userData) return;
-            document.querySelector('.g_id_signin').style.display = 'none';
-            document.getElementById('userDP').src = userData.picture;
-            document.getElementById('userDP').style.display = 'block';
-            document.getElementById('userName').innerText = userData.name;
-            document.getElementById('userEmail').innerText = userData.email;
-            document.getElementById('userInfo').style.display = 'flex';
-            appendZoyaMessage(`Swagat hai **${userData.name}**! Aap successfully login ho chuke hain. Kahiye kya madad karoon? ✨`, true);
-        }
-
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0]; if(!file) return;
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                const base64String = event.target.result.split(',')[1];
-                appendUserMessage(`<img src="${event.target.result}">`);
-                const payload = [ { inlineData: { data: base64String, mimeType: file.type } }, { text: "Is photo ko dhyan se dekho aur batao isme kya hai." } ];
-                extendedMemory.push({ role: "user", parts: payload });
-                saveMemory(); askZoyaRaw();
-            };
-            reader.readAsDataURL(file); e.target.value = "";
-        });
-
-        const chatScreen = document.getElementById('chatScreen'); const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn'); const micBtn = document.getElementById('micBtn');
-        const waveContainer = document.getElementById('waveContainer');
-
-        if (micBtn) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            
-            if (SpeechRecognition) {
-                try {
-                    const recognition = new SpeechRecognition();
-                    recognition.lang = 'hi-IN'; 
-                    recognition.continuous = false;
-                    recognition.interimResults = false;
-
-                    let isRecording = false;
-
-                    micBtn.addEventListener('click', () => {
-                        if (isRecording) { recognition.stop(); return; }
-                        try { recognition.start(); } catch (e) { console.warn("Mic start issue"); }
-                    });
-
-                    recognition.onstart = () => {
-                        isRecording = true;
-                        micBtn.classList.add('recording');
-                        userInput.placeholder = "Boliye Boss, Zoya sun rahi hai...";
-                    };
-
-                    recognition.onresult = (event) => {
-                        if(event.results && event.results[0] && event.results[0][0]) {
-                            const transcript = event.results[0][0].transcript;
-                            userInput.value = transcript;
-                            sendBtn.click(); 
-                        }
-                    };
-
-                    recognition.onerror = (event) => {
-                        isRecording = false;
-                        micBtn.classList.remove('recording');
-                        userInput.placeholder = "यहाँ मैसेज डालें...";
-                        if (event.error === 'not-allowed') alert("Boss, browser mein Microphone ki permission de dijiye!");
-                    };
-
-                    recognition.onend = () => {
-                        isRecording = false;
-                        micBtn.classList.remove('recording');
-                        userInput.placeholder = "यहाँ मैसेज डालें...";
-                    };
-                } catch(err) { console.warn("Speech Recog blocked"); }
-            } else {
-                micBtn.addEventListener('click', () => { alert("Boss, is browser mein voice typing ka support nahi hai!"); });
-            }
-        }
-
-        function appendUserMessage(htmlContent) {
-            const d = document.createElement('div'); d.classList.add('message', 'user-msg');
-            d.innerHTML = `<div class="msg-bubble">${htmlContent}</div>`;
-            chatScreen.appendChild(d); chatScreen.scrollTop = chatScreen.scrollHeight;
-        }
-
-        function appendZoyaMessage(rawText, isTyping = false) {
-            const id = 'msg-' + Date.now() + Math.floor(Math.random() * 1000);
-            messageMemory[id] = rawText; 
-            const d = document.createElement('div'); 
-            d.classList.add('message', 'zoya-msg');
-            d.innerHTML = `
-                <div class="zoya-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <div class="msg-bubble" style="width: 100%;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
-                        <span style="color: #c58af9; font-weight: bold; font-size: 13px;">Zoya</span>
-                        <button class="tts-btn" data-id="${id}" title="Padhkar sunao"><i class="fa-solid fa-volume-high"></i></button>
-                    </div>
-                    <div class="content-body" id="${id}"></div>
-                </div>
-            `;
-            chatScreen.appendChild(d);
-            const bodyDiv = d.querySelector('.content-body');
-            
-            let parsedHTML = rawText; // Fallback
-            try { if (typeof marked !== 'undefined') parsedHTML = marked.parse(rawText); } catch(e) {}
-
-            if (isTyping) {
-                let i = 0; let isTag = false; let text = "";
-                function type() {
-                    if (i < parsedHTML.length) {
-                        text += parsedHTML.charAt(i);
-                        if (parsedHTML.charAt(i) === '<') isTag = true;
-                        if (parsedHTML.charAt(i) === '>') isTag = false;
-                        bodyDiv.innerHTML = text;
-                        i++;
-                        if (isTag) { type(); } else { setTimeout(type, 10); } 
-                        chatScreen.scrollTop = chatScreen.scrollHeight;
-                    }
-                }
-                type();
-            } else {
-                bodyDiv.innerHTML = parsedHTML;
-                chatScreen.scrollTop = chatScreen.scrollHeight;
-            }
-        }
-
-        async function askZoya(t) {
-            appendUserMessage(t);
-            extendedMemory.push({ role: "user", parts: [{ text: t }] });
-            saveMemory(); await askZoyaRaw();
-        }
-
-        async function askZoyaRaw() {
-            waveContainer.style.display = 'flex';
-            document.getElementById('coreStatus').innerText = "Typing...";
-            
-            const requestPayload = { 
-                systemInstruction: { parts: [{ text: "Your name is ZOYA. You MUST ALWAYS address the user as 'Boss'. Keep conversation crisp and in Hinglish. You are an Elite Senior Python Developer and Algo Expert. Your primary job is to write highly optimized, bug-free, and professional Python scripts super fast. Avoid long explanations. Focus directly on providing the exact, working code block using standard libraries." }] },
-                contents: extendedMemory
-            };
-            
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestPayload)
-                });
-                const resData = await response.json();
-                if (resData.error) {
-                    let exactError = resData.error.message || "Unknown error";
-                    let errMsg = `Boss, ek problem aayi hai. Google ka system ye error de raha hai:\n\n**${exactError}**\n\nIska matlab ya toh din ki limit khatam ho gayi hai, ya API key thik nahi hai. Thoda wait karke dekhiye.`;
-                    extendedMemory.pop(); saveMemory();
-                    appendZoyaMessage(errMsg, true);
-                    waveContainer.style.display = 'none';
-                    document.getElementById('coreStatus').innerText = "1.5 Pro Active ✨";
-                    return;
-                }
-                let textReply = "";
-                if (resData && resData.candidates && resData.candidates[0]) {
-                    const cand = resData.candidates[0];
-                    if (cand.content && cand.content.parts) {
-                        cand.content.parts.forEach(part => { if (part.text) { textReply += part.text; } });
-                    }
-                }
-                if(textReply && textReply.trim() !== "") {
-                    extendedMemory.push({ role: "model", parts: [{ text: textReply }] });
-                    saveMemory(); 
-                    appendZoyaMessage(textReply, true); 
-                }
-            } catch(e) {
-                extendedMemory.pop(); saveMemory();
-                appendZoyaMessage(`Boss, connection fail ho gaya. Error detail: **${e.message}**`, true); 
-            }
-            waveContainer.style.display = 'none';
-            document.getElementById('coreStatus').innerText = "1.5 Flash Active ✨";
-        }
-
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-        }
-
-        if(sendBtn) {
-            sendBtn.addEventListener('click', () => { 
-                const t = userInput.value.trim(); if(!t) return; 
-                userInput.value = ""; askZoya(t); 
-            });
-            userInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') sendBtn.click(); });
+                const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: extendedMemory }) });
+                const data = await res.json();
+                if (data.error) { extendedMemory.pop(); saveDb(); appendZoya(`**Error:** ${data.error.message}`, true); } 
+                else if (data.candidates && data.candidates[0].content.parts) { let reply = ""; data.candidates[0].content.parts.forEach(p => reply += p.text); if(reply) { extendedMemory.push({ role: "model", parts: [{ text: reply }] }); saveDb(); appendZoya(reply, true); } }
+            } catch(e) { extendedMemory.pop(); saveDb(); appendZoya("Network error Boss.", true); }
+            document.getElementById('waveContainer').style.display = 'none';
         }
     </script>
 </body>

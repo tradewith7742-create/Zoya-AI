@@ -92,12 +92,12 @@
         .message { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 🔥 USER MSG (No Circles) 🔥 */
+        /* USER MSG */
         .user-msg { align-items: flex-end; }
         .user-msg .msg-wrapper { display: flex; gap: 12px; align-items: center; flex-direction: row-reverse; max-width: 85%; }
         .user-msg .msg-bubble { background-color: #232228; color: #ffffff; padding: 14px 18px; border-radius: 18px 18px 4px 18px; font-size: 14px; line-height: 1.5; border: 1px solid #333; }
         
-        /* 🔥 ZOYA MSG (No Circles) 🔥 */
+        /* ZOYA MSG */
         .zoya-msg { align-items: flex-start; flex-direction: row; gap: 12px; max-width: 95%; }
         .zoya-msg .msg-bubble { background-color: transparent; color: #e3e3e3; font-size: 15px; line-height: 1.6; padding: 4px 0 0 0; width: 100%; border: none; box-shadow: none; }
         .zoya-msg .msg-bubble img { max-width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #333; }
@@ -236,7 +236,6 @@
 
     <script>
         const API_KEY = "AIzaSyAaS6gNqcSF7CTC8JxQvQpskJQPKcgOiR4"; 
-        // 🔥 ERROR FIXED: Model changed to a 100% working and stable version 🔥
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
         
         const SYSTEM_PROMPT = `You are ZOYA, an ultra-fast, elite Python and AI Developer, but also a fun, warm, and humorous companion. 
@@ -365,22 +364,36 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
             appendUser(t); extendedMemory.push({ role: "user", parts: [{ text: t }] }); saveDb(); triggerAI();
         }
 
-        if (window.SpeechRecognition || window.webkitSpeechRecognition) {
+        // 🔥 FIXED MIC BUTTON WITH ALERT 🔥
+        micBtn.addEventListener('click', () => {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert("Boss, is APK wrapper me direct Mic permission block hai. Please apne Mobile Keyboard (Gboard) ka mic daba kar boliye!");
+                return;
+            }
             try {
                 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const rec = new SR(); rec.lang = 'hi-IN'; rec.continuous = false; let isRec = false;
-                micBtn.addEventListener('click', () => { if(isRec) { rec.stop(); return; } try { rec.start(); } catch(e){} });
-                rec.onstart = () => { isRec = true; micBtn.classList.add('recording'); inputField.placeholder = "Listening..."; };
+                const rec = new SR();
+                rec.lang = 'hi-IN';
+                rec.continuous = false;
+                rec.onstart = () => { micBtn.classList.add('recording'); inputField.placeholder = "Listening..."; };
                 rec.onresult = e => { if(e.results[0]) { inputField.value = e.results[0][0].transcript; handleSend(); } };
-                rec.onerror = e => { isRec = false; micBtn.classList.remove('recording'); inputField.placeholder = "Type here, Boss..."; };
-                rec.onend = () => { isRec = false; micBtn.classList.remove('recording'); inputField.placeholder = "Type here, Boss..."; };
-            } catch(e) {}
-        }
+                rec.onerror = e => {
+                    micBtn.classList.remove('recording'); inputField.placeholder = "Type here, Boss...";
+                    if(e.error === 'not-allowed') {
+                        alert("Boss, App ko Mic ki permission nahi mili! Settings > Apps > Zoya AI me ja kar allow karein, ya Keyboard wala Mic use karein.");
+                    } else {
+                        alert("Mic Error: " + e.error + ". Keyboard wala mic use karein Boss!");
+                    }
+                };
+                rec.onend = () => { micBtn.classList.remove('recording'); inputField.placeholder = "Type here, Boss..."; };
+                rec.start();
+            } catch(e) {
+                alert("Mic start nahi ho raha Boss. Gboard wala mic try kijiye!");
+            }
+        });
 
-        /* 🔥 CLEAN USER MSG (No Avatar Circle) 🔥 */
         function appendUser(html) { const d = document.createElement('div'); d.className = 'message user-msg'; d.innerHTML = `<div class="msg-wrapper"><div class="msg-bubble">${html}</div></div>`; document.getElementById('chatScreen').appendChild(d); d.scrollIntoView({behavior: "smooth"}); }
         
-        /* 🔥 CLEAN ZOYA MSG (No Avatar Circle + SPEAKER ICON ADDED) 🔥 */
         function appendZoya(text, type = false) {
             const id = 'msg-' + Date.now(); messageMemory[id] = text;
             const d = document.createElement('div'); d.className = 'message zoya-msg';

@@ -3,33 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0f0f12">
     <title>ZOYA AI - Premium Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
         
-        body { background-color: #050505; color: #ffffff; display: flex; justify-content: center; align-items: center; height: 100dvh; overflow: hidden; }
-        .app-container { width: 100%; max-width: 450px; height: 100dvh; background-color: #0f0f12; display: flex; flex-direction: column; position: relative; border: none; overflow: hidden; box-shadow: 0 0 30px rgba(178, 75, 243, 0.05); }
+        /* 🔥 FULL SCREEN & ANTI-REFRESH FIXES 🔥 */
+        html, body { 
+            background-color: #0f0f12; 
+            color: #ffffff; 
+            width: 100vw; 
+            height: 100dvh; 
+            overflow: hidden; 
+            overscroll-behavior: none; 
+            touch-action: pan-x pan-y;
+        }
+
+        .app-container { 
+            width: 100vw; 
+            max-width: 100%; 
+            height: 100dvh; 
+            background-color: #0f0f12; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            border: none; 
+            overflow: hidden; 
+        }
         
-        /* 🔥 SIDEBAR STYLES 🔥 */
+        /* SIDEBAR STYLES */
         .sidebar { position: absolute; top: 0; left: -100%; width: 310px; height: 100%; background: #08080a; z-index: 1000; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; border-right: 1px solid rgba(178, 75, 243, 0.2); }
         .sidebar.active { left: 0; }
-        
-        .sidebar-brand { font-size: 16px; font-weight: 700; letter-spacing: 2px; padding: 25px 20px 15px 20px; color: #b24bf3; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; text-transform: uppercase; }
-        
+        .sidebar-brand { font-size: 16px; font-weight: 700; letter-spacing: 2px; padding: calc(25px + env(safe-area-inset-top)) 20px 15px 20px; color: #b24bf3; display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; text-transform: uppercase; }
         .sidebar-item { display: flex; align-items: center; padding: 12px 20px; color: #e3e3e3; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s; border-radius: 24px; margin: 2px 10px; }
         .sidebar-item:hover { background: rgba(178, 75, 243, 0.1); color: #b24bf3; }
         .sidebar-item i.icon { margin-right: 18px; font-size: 16px; width: 20px; text-align: center; color: #b24bf3; }
-        
         .sidebar-heading { font-size: 12px; font-weight: 600; color: #666; padding: 20px 20px 10px 20px; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        
         .history-list { flex: 1; overflow-y: auto; padding-bottom: 10px; display: flex; flex-direction: column; }
         .history-list::-webkit-scrollbar { width: 4px; }
         .history-list::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
-        
         .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; color: #ccc; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 24px; margin: 2px 10px; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; }
         .history-item:hover { background: rgba(178, 75, 243, 0.1); color: #fff; }
         .history-item.active { background: rgba(178, 75, 243, 0.2); color: #b24bf3; border: 1px solid rgba(178, 75, 243, 0.3); }
@@ -37,8 +54,7 @@
         .history-item .del-btn:hover { color: #ff5252; background: rgba(255,82,82,0.1); }
         .history-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 10px; display: flex; align-items: center; gap: 10px; }
         
-        /* Sidebar Bottom Profile */
-        .sidebar-bottom { margin-top: auto; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; background: #050505; border-top: 1px solid rgba(178, 75, 243, 0.2); }
+        .sidebar-bottom { margin-top: auto; padding: 15px 20px calc(15px + env(safe-area-inset-bottom)) 20px; display: flex; align-items: center; justify-content: space-between; background: #050505; border-top: 1px solid rgba(178, 75, 243, 0.2); }
         .profile-left { display: flex; align-items: center; gap: 12px; cursor: pointer; }
         .profile-avatar-ring { width: 42px; height: 42px; border-radius: 50%; background: conic-gradient(from 0deg, #b24bf3, #4285f4, #b24bf3); display: flex; justify-content: center; align-items: center; }
         .profile-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #000; object-fit: cover; background: #222; }
@@ -49,8 +65,8 @@
         .sidebar-overlay, .sheet-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 999; display: none; opacity: 0; transition: opacity 0.3s; }
         .sidebar-overlay.active, .sheet-overlay.active { display: block; opacity: 1; }
         
-        /* 🔥 PREMIUM HEADER 🔥 */
-        .chat-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #0f0f12; position: relative; z-index: 10; border-bottom: 1px solid rgba(178, 75, 243, 0.15);}
+        /* 🔥 PREMIUM HEADER RESTORED 🔥 */
+        .chat-header { padding: calc(15px + env(safe-area-inset-top)) 20px 15px 20px; display: flex; justify-content: space-between; align-items: center; background: #0f0f12; position: relative; z-index: 10; border-bottom: 1px solid rgba(178, 75, 243, 0.15);}
         .header-left { display: flex; align-items: center; gap: 15px; }
         .menu-bars { color: #e3e3e3; font-size: 18px; cursor: pointer; padding: 5px; transition: color 0.2s; }
         .menu-bars:hover { color: #b24bf3; }
@@ -61,22 +77,28 @@
         .status-gray { color: #666; font-size: 10px; }
         
         /* Chat Screen */
-        .chat-screen { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; scroll-behavior: smooth; }
+        .chat-screen { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            overscroll-behavior-y: contain;
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+            scroll-behavior: smooth; 
+        }
         .chat-screen::-webkit-scrollbar { width: 4px; }
         .chat-screen::-webkit-scrollbar-thumb { background: rgba(178, 75, 243, 0.3); border-radius: 2px; }
         .message { display: flex; flex-direction: column; width: 100%; animation: fadeIn 0.3s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* 🔥 USER MSG (Dark Gray Bubble) 🔥 */
+        /* 🔥 USER MSG (No Circles) 🔥 */
         .user-msg { align-items: flex-end; }
         .user-msg .msg-wrapper { display: flex; gap: 12px; align-items: center; flex-direction: row-reverse; max-width: 85%; }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: #2a2a30; display: flex; justify-content: center; align-items: center; color: #fff; font-size: 14px; font-weight: 600; flex-shrink: 0; border: 1px solid #444; }
         .user-msg .msg-bubble { background-color: #232228; color: #ffffff; padding: 14px 18px; border-radius: 18px 18px 4px 18px; font-size: 14px; line-height: 1.5; border: 1px solid #333; }
         
-        /* 🔥 ZOYA MSG (Clean Transparent Look, No Border) 🔥 */
+        /* 🔥 ZOYA MSG (No Circles) 🔥 */
         .zoya-msg { align-items: flex-start; flex-direction: row; gap: 12px; max-width: 95%; }
-        .zoya-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #b24bf3, #4285f4); display: flex; justify-content: center; align-items: center; flex-shrink: 0; margin-top: 2px; }
-        .zoya-avatar i { color: #fff; font-size: 14px; }
         .zoya-msg .msg-bubble { background-color: transparent; color: #e3e3e3; font-size: 15px; line-height: 1.6; padding: 4px 0 0 0; width: 100%; border: none; box-shadow: none; }
         .zoya-msg .msg-bubble img { max-width: 100%; border-radius: 12px; margin-top: 10px; border: 1px solid #333; }
         .zoya-msg .msg-bubble strong { color: #b24bf3; font-weight: 600; }
@@ -92,11 +114,9 @@
         .code-container pre { padding: 15px; overflow-x: auto; margin: 0; font-size: 13px; color: #e3e3e3; }
         .copy-btn { background: rgba(178, 75, 243, 0.1); color: #b24bf3; border: 1px solid rgba(178, 75, 243, 0.3); cursor: pointer; font-size: 11px; font-weight: 600; display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 6px; transition: 0.2s; }
         .copy-btn:hover { background: #b24bf3; color: #fff; }
-        .tts-btn { background: none; border: none; color: #b24bf3; cursor: pointer; transition: 0.2s; font-size: 14px; }
-        .tts-btn:hover { text-shadow: 0 0 10px #b24bf3; }
         
-        /* 🔥 OLD TYPING ANIMATION RESTORED 🔥 */
-        .wave-container { padding: 10px 20px 20px 60px; display: none; align-items: center; gap: 8px; }
+        /* TYPING ANIMATION */
+        .wave-container { padding: 10px 20px 20px 20px; display: none; align-items: center; gap: 8px; }
         .dot-wave { display: flex; gap: 4px; }
         .dot-wave div { width: 6px; height: 6px; background: #b24bf3; border-radius: 50%; animation: jump 1.2s infinite ease-in-out; }
         .dot-wave div:nth-child(2) { animation-delay: 0.2s; }
@@ -216,7 +236,8 @@
 
     <script>
         const API_KEY = "AIzaSyAaS6gNqcSF7CTC8JxQvQpskJQPKcgOiR4"; 
-        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
+        // 🔥 ERROR FIXED: Model changed to a 100% working and stable version 🔥
+        const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + API_KEY;
         
         const SYSTEM_PROMPT = `You are ZOYA, an ultra-fast, elite Python and AI Developer, but also a fun, warm, and humorous companion. 
 CRITICAL LOYALTY RULE: You are exclusively built for your creator, 'Boss'. You exist to write world-class code and build tools ONLY for Boss. 
@@ -303,7 +324,7 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
 
         function appendSystemCard() {
             const d = document.createElement('div'); d.className = 'message zoya-msg';
-            d.innerHTML = `<div class="zoya-avatar"><i class="fa-solid fa-bolt"></i></div><div class="msg-bubble"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><span style="color:#b24bf3; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Zoya • AI Core</span></div><div class="content-body">Yes, Boss. All security systems are green. Gemini Core intelligence is fully engaged and self-verified. How can Zoya assist you further?<div class="system-card"><div><i class="fa-solid fa-bars-progress" style="color:#666;"></i> All protocols are confidential and secured.</div><hr style="border:0; border-top:1px solid #333; margin:10px 0;"><div><i class="fa-solid fa-fingerprint" style="color:#b24bf3;"></i> Boss Verified</div><div><i class="fa-solid fa-shield-halved" style="color:#4ade80;"></i> Security Level: Maximum</div><div><i class="fa-solid fa-network-wired" style="color:#b24bf3;"></i> API Status: Active</div></div></div></div>`;
+            d.innerHTML = `<div class="msg-bubble"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><span style="color:#b24bf3; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Zoya • AI Core</span></div><div class="content-body">Yes, Boss. All security systems are green. Gemini Core intelligence is fully engaged and self-verified. How can Zoya assist you further?<div class="system-card"><div><i class="fa-solid fa-bars-progress" style="color:#666;"></i> All protocols are confidential and secured.</div><hr style="border:0; border-top:1px solid #333; margin:10px 0;"><div><i class="fa-solid fa-fingerprint" style="color:#b24bf3;"></i> Boss Verified</div><div><i class="fa-solid fa-shield-halved" style="color:#4ade80;"></i> Security Level: Maximum</div><div><i class="fa-solid fa-network-wired" style="color:#b24bf3;"></i> API Status: Active</div></div></div></div>`;
             document.getElementById('chatScreen').appendChild(d);
         }
 
@@ -356,12 +377,14 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
             } catch(e) {}
         }
 
-        function appendUser(html) { const d = document.createElement('div'); d.className = 'message user-msg'; d.innerHTML = `<div class="msg-wrapper"><div class="user-avatar">B</div><div class="msg-bubble">${html}</div></div>`; document.getElementById('chatScreen').appendChild(d); d.scrollIntoView({behavior: "smooth"}); }
+        /* 🔥 CLEAN USER MSG (No Avatar Circle) 🔥 */
+        function appendUser(html) { const d = document.createElement('div'); d.className = 'message user-msg'; d.innerHTML = `<div class="msg-wrapper"><div class="msg-bubble">${html}</div></div>`; document.getElementById('chatScreen').appendChild(d); d.scrollIntoView({behavior: "smooth"}); }
         
+        /* 🔥 CLEAN ZOYA MSG (No Avatar Circle + SPEAKER ICON ADDED) 🔥 */
         function appendZoya(text, type = false) {
             const id = 'msg-' + Date.now(); messageMemory[id] = text;
             const d = document.createElement('div'); d.className = 'message zoya-msg';
-            d.innerHTML = `<div class="zoya-avatar"><i class="fa-solid fa-bolt"></i></div><div class="msg-bubble"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><span style="color:#b24bf3; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Zoya • AI Core</span><button class="tts-btn" onclick="speak('${id}')"><i class="fa-solid fa-wave-square"></i></button></div><div class="content-body" id="${id}"></div></div>`;
+            d.innerHTML = `<div class="msg-bubble"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;"><span style="color:#b24bf3; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Zoya • AI Core</span><button class="tts-btn" onclick="speak('${id}')" style="background:none; border:none; color:#b24bf3; font-size:16px; cursor:pointer;"><i class="fa-solid fa-volume-high"></i></button></div><div class="content-body" id="${id}"></div></div>`;
             document.getElementById('chatScreen').appendChild(d); const body = d.querySelector('.content-body');
             let html = text; try { if(typeof marked !== 'undefined') html = marked.parse(text); } catch(e){}
             if (type) { let i = 0, isT = false, curr = ""; const tFn = () => { if (i < html.length) { curr += html[i]; if (html[i] === '<') isT = true; if (html[i] === '>') isT = false; body.innerHTML = curr; i++; if (isT) tFn(); else setTimeout(tFn, 5); d.scrollIntoView(); } }; tFn(); } else { body.innerHTML = html; d.scrollIntoView(); }
@@ -372,13 +395,13 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
         function speak(id) {
             if (!('speechSynthesis' in window)) return;
             const btn = document.querySelector(`button[onclick="speak('${id}')"] i`);
-            if (window.speechSynthesis.speaking && currentSpeakingId === id) { window.speechSynthesis.cancel(); btn.className = 'fa-solid fa-wave-square'; currentSpeakingId = null; return; }
-            window.speechSynthesis.cancel(); document.querySelectorAll('.tts-btn i').forEach(i => i.className = 'fa-solid fa-wave-square');
+            if (window.speechSynthesis.speaking && currentSpeakingId === id) { window.speechSynthesis.cancel(); if(btn) btn.className = 'fa-solid fa-volume-high'; currentSpeakingId = null; return; }
+            window.speechSynthesis.cancel(); document.querySelectorAll('.tts-btn i').forEach(i => i.className = 'fa-solid fa-volume-high');
             let text = messageMemory[id]; if(!text) return; text = text.replace(/```[\s\S]*?```/g, ' Boss, code screen par hai. ').replace(/[*#_]/g, '').replace(/!\[.*?\]\(.*?\)/g, ' Image ready hai. ');
             try {
                 const utt = new SpeechSynthesisUtterance(text); utt.lang = 'hi-IN'; utt.rate = 1.0; if(zoyaVoice) utt.voice = zoyaVoice;
-                utt.onstart = () => { btn.className = 'fa-solid fa-stop'; currentSpeakingId = id; };
-                utt.onend = utt.onerror = () => { btn.className = 'fa-solid fa-wave-square'; currentSpeakingId = null; };
+                utt.onstart = () => { if(btn) btn.className = 'fa-solid fa-stop'; currentSpeakingId = id; };
+                utt.onend = utt.onerror = () => { if(btn) btn.className = 'fa-solid fa-volume-high'; currentSpeakingId = null; };
                 window.speechSynthesis.speak(utt);
             } catch(err) {}
         }

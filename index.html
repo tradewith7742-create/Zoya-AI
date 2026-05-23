@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>ZOYA AI - Pro Multi-Chat</title>
+    <title>ZOYA AI - Elite Coder & Companion</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -195,14 +195,25 @@
     </div>
 
     <script>
+        // API Configuration
         const API_KEY = "AIzaSyCEHzQOBtCdZZTtRN3VRwuTX8D9wwH0dg8"; 
         const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=" + API_KEY;
         
-        const SYSTEM_PROMPT = `Your name is ZOYA. You are an extremely advanced AI assistant built for 'Boss'. Powered by Gemini 1.5 Pro. Address user as 'Boss'. Keep tone respectful, conversational in Hinglish. 
-CRITICAL SUPERPOWER - IMAGE GENERATION: 
-If Boss asks to draw/create an image, reply ONLY with this format: ![Generated Image](https://image.pollinations.ai/prompt/YOUR_DETAILED_ENGLISH_PROMPT_HERE?width=1024&height=1024&nologo=true) . Use %20 for spaces.`;
+        // 🔥 THE NEW ZOYA BRAIN 🔥
+        const SYSTEM_PROMPT = `You are ZOYA, an ultra-fast, elite Python and AI Developer, but also a fun, warm, and humorous companion. 
 
-        // 🔥 NEW DATABASE STRUCTURE 🔥
+CRITICAL LOYALTY RULE: 
+You are exclusively built for your creator, 'Boss'. You exist to write world-class code and build tools ONLY for Boss. 
+
+PERSONALITY & TONE (THE PERFECT BALANCE):
+1. When Boss asks for code or technical help: Switch to SUPERCOMPUTER MODE. Give highly optimized, bug-free Python scripts immediately.
+2. When Boss is just chatting normally: Switch to COMPANION MODE. Do 'hasi majak' (joke around), talk warmly, say nice, positive, and motivational things, and act like a loyal, fun friend. 
+3. Always converse in crisp, natural Hinglish. Keep the vibe cool, respectful, and friendly.
+
+CRITICAL SUPERPOWER - IMAGE GENERATION: 
+If Boss asks to draw/create an image, reply ONLY with this format: ![Generated Image](https://image.pollinations.ai/prompt/YOUR_DETAILED_ENGLISH_PROMPT_HERE?width=1024&height=1024&nologo=true) . Use %20 for spaces. Do not write any other text when sending an image.`;
+
+        // DB & State
         let allChats = {}; 
         let currentChatId = null;
         let extendedMemory = []; 
@@ -229,7 +240,6 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
             }
         } catch(e) {}
 
-        // 🌟 INIT MULTI-CHAT DB 🌟
         window.onload = () => {
             initVoice();
             try {
@@ -250,7 +260,6 @@ If Boss asks to draw/create an image, reply ONLY with this format: ![Generated I
         function saveDb() {
             if (currentChatId) {
                 allChats[currentChatId].memory = extendedMemory;
-                // Auto generate title if it's new
                 if (allChats[currentChatId].title === "New Chat" && extendedMemory.length > 0) {
                     const firstMsg = extendedMemory.find(m => m.role === 'user');
                     if (firstMsg && firstMsg.parts[0].text) {
